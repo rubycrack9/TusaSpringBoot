@@ -12,6 +12,5 @@ public interface IClienteServices {
 
 	public Clientes getClienteid(Integer id);
 	
-	public Clientes borrarClienteId(Integer id);
 	
 }

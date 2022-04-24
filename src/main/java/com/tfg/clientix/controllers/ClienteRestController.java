@@ -123,13 +123,6 @@ public class ClienteRestController {
 	}
 	
 
-	@DeleteMapping("/borrarCliente/{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id){
-		clienteServices.borrarClienteId(id);
-		
-		
-		
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-	}
+	
 
 }
