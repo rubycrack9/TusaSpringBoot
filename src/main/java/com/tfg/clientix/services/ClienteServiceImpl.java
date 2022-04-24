@@ -30,7 +30,12 @@ public class ClienteServiceImpl implements IClienteServices {
 		public Clientes insert(Clientes c) {
 		return clienteDao.save(c);
 	}
-
+	
+	@Override
+	public Clientes borrarclienteId(Integer id)
+	{
+		return clienteDao.deleteById(id);
+	}
 	
 
 	
@@ -48,6 +53,7 @@ public class ClienteServiceImpl implements IClienteServices {
 	public Clientes getClienteid(Integer id) {
 			return clienteDao.findById(id).orElse(null);
 	}
+	
 	
 	
 

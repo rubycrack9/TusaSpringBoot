@@ -7,6 +7,7 @@ public class CodigosErrorRest
 	public static final String COD_ERROR_UNO = "1";
 	public static final String COD_ERROR_CERO = "0";
 	public static final String COD_ERROR_DEFECTO = "800";
+	public static final String COD_ERROR_FORMATO_CLIENTE = "801";
 	public static final String LIT_ERROR_SUCCESS = "Success";
 	
 	public static final String ERROR_CIFNIF_OBLIGATORIO = "El campo CIFNIF no puede enviarse vacio";

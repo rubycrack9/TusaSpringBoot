@@ -92,6 +92,10 @@ public class ValidarClientes {
         	error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_ERRONEO);
+        }else {
+        	error.setValidado(true);
+    		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+    		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
         }
 		return error;
 	}
