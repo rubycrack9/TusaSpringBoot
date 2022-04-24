@@ -12,11 +12,14 @@ import org.springframework.http.HttpStatus;
 import com.tfg.clientix.models.dao.IClienteDao;
 import com.tfg.clientix.models.entity.Clientes;
 
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
+
 @Service
 public class ClienteServiceImpl implements IClienteServices {
 
 	@Autowired
 	private IClienteDao clienteDao;
+	private Clientes c;
 
 	@Override
 	public List<Clientes> getClientes() {
@@ -25,8 +28,27 @@ public class ClienteServiceImpl implements IClienteServices {
 
 	@Override
 		public Clientes insert(Clientes c) {
-		// TODO Auto-generated method stub
 		return clienteDao.save(c);
 	}
+
+	
+
+	
+	/*@Override
+	public Clientes update(Clientes c, Integer id) {
+	Clientes  cliente_actual = clienteDao.findById(id).orElse(null);
+	cliente_actual.setCIFNIF(c.getCIFNIF());
+	cliente_actual.setDireccionFacturacion(c.getDireccionFacturacion());
+	cliente_actual.setNombreCliente(c.getNombreCliente());
+	return cliente_actual;
+	}*/
+
+	@Override
+	@Transactional(readOnly = true)
+	public Clientes getClienteid(Integer id) {
+			return clienteDao.findById(id).orElse(null);
+	}
+	
+	
 
 }

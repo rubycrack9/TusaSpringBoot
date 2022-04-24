@@ -2,11 +2,14 @@ package com.tfg.clientix.models.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name = "clientes")
@@ -16,6 +19,7 @@ public class Clientes implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idCliente;
 	private String NombreCliente;
+	@Column(name = "CIFNIF", unique = true)
 	private String CIFNIF;
 	private String DireccionFacturacion;
 

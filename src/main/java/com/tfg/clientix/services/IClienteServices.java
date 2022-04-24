@@ -7,5 +7,9 @@ public interface IClienteServices {
 	public List<Clientes> getClientes();
 	
 	public Clientes insert (Clientes c);
+	
+	//public Clientes update (Clientes c, Integer id);
 
+	public Clientes getClienteid(Integer id);
+	
 }
