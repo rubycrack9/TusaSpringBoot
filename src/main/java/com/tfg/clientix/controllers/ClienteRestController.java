@@ -102,7 +102,7 @@ public class ClienteRestController {
 		Clientes cliente_actualizado = null;
 
 		if (cliente_actual == null) {
-			response.put("mensaje", "Error: no se pudo editar, el cliente ID: "
+			response.put("Mensaje", "Error: no se pudo editar, el cliente ID: "
 					.concat(id.toString().concat(" no existe en la base de datos")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
@@ -112,21 +112,23 @@ public class ClienteRestController {
 			cliente_actual.setNombreCliente(c.getNombreCliente());
 			cliente_actualizado = clienteServices.insert(cliente_actual);
 		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el cliente en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			response.put("Mensaje", "Error al actualizar el cliente en la base de datos");
+			response.put("Error:", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "El cliente ha sido actualizado con éxito!");
-		response.put("cliente", cliente_actualizado);
+		response.put("Mensaje", "El cliente ha sido actualizado con éxito!");
+		response.put("Cliente:", cliente_actualizado);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
 	//METODO BORRAR POR ID
 	@DeleteMapping("borrarCliente/{id}")
-	public void delete(@PathVariable Integer id)
+	public ResponseEntity<?> delete(@PathVariable Integer id)
 	{
 		clienteServices.deletebyId(id);
+		response.put("Mensaje", "Cliente borrado con éxito");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 	
 
