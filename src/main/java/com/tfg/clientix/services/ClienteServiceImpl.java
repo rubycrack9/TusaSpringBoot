@@ -30,23 +30,6 @@ public class ClienteServiceImpl implements IClienteServices {
 		public Clientes insert(Clientes c) {
 		return clienteDao.save(c);
 	}
-	
-	/*@Override
-	public Clientes borrarclienteId(Integer id)
-	{
-		return clienteDao.deleteById(id);
-	}*/
-	
-
-	
-	/*@Override
-	public Clientes update(Clientes c, Integer id) {
-	Clientes  cliente_actual = clienteDao.findById(id).orElse(null);
-	cliente_actual.setCIFNIF(c.getCIFNIF());
-	cliente_actual.setDireccionFacturacion(c.getDireccionFacturacion());
-	cliente_actual.setNombreCliente(c.getNombreCliente());
-	return cliente_actual;
-	}*/
 
 	@Override
 	@Transactional(readOnly = true)
@@ -61,6 +44,13 @@ public class ClienteServiceImpl implements IClienteServices {
 		clienteDao.deleteById(id);
 		
 	}
+
+	@Override
+	public List<Clientes> getClientesPaginacion() {
+		//Esto en un futuro hay que hacerlo
+		return null;
+	}
+	
 
 	
 	

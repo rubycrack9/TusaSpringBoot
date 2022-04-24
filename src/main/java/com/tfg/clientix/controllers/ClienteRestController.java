@@ -35,13 +35,14 @@ public class ClienteRestController {
 	
 	@Autowired
 	private IClienteServices clienteServices;
-
+	
+	//CONSULTAR TODOS LOS CLIENTES
 	@GetMapping("/clientes")
 	public List<Clientes> getClientes() {
 		return clienteServices.getClientes();
 
 	}
-
+	//INSERTAR UN CLIENTE
 	@PostMapping("/insertarcliente")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> insert(@RequestBody Clientes c) {
@@ -69,7 +70,7 @@ public class ClienteRestController {
 		return new ResponseEntity<Clientes>(c, HttpStatus.CREATED);
 
 	}
-
+	//CONSULTAR UN CLIENTE POR SU ID
 	@GetMapping("/clientes/{id}")
 	public ResponseEntity<?> mostrarporId(@PathVariable Integer id) {
 
@@ -94,7 +95,13 @@ public class ClienteRestController {
 		return new ResponseEntity<Clientes>(c, HttpStatus.OK);
 
 	}
-
+	//Esto va a ser la paginación hay que hacerla en algun momento
+	/*
+	@GetMapping("/clientes/{registroInicial},{numRegistros}")
+	public List<Clientes> getClientesPaginacion(@PathVariable Integer registroInicial, @PathVariable Integer numRegistros){
+		
+	}*/
+	//ACTUALIZAR CLIENTE
 	@PutMapping("/actualizarCliente/{id}")
 	public ResponseEntity<?> update(@RequestBody Clientes c, @PathVariable Integer id) {
 		
@@ -102,32 +109,45 @@ public class ClienteRestController {
 		Clientes cliente_actualizado = null;
 
 		if (cliente_actual == null) {
-			response.put("Mensaje", "Error: no se pudo editar, el cliente ID: "
+			response.put("Mensaje", "No se pudo editar, el cliente ID: "
 					.concat(id.toString().concat(" no existe en la base de datos")));
+			response.put("Código de error:", CodigosErrorRest.COD_ERROR_CLIENTE_NO_ENCONTRADO);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		try {
-			cliente_actual.setCIFNIF(c.getCIFNIF());
-			cliente_actual.setDireccionFacturacion(c.getDireccionFacturacion());
-			cliente_actual.setNombreCliente(c.getNombreCliente());
-			cliente_actualizado = clienteServices.insert(cliente_actual);
-		} catch (DataAccessException e) {
-			response.put("Mensaje", "Error al actualizar el cliente en la base de datos");
-			response.put("Error:", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		response.put("Mensaje", "El cliente ha sido actualizado con éxito!");
-		response.put("Cliente:", cliente_actualizado);
+		}else {
+			ErrorRest error = new ErrorRest();
 
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+			error = ValidarClientes.validarCliente(c);
+
+			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
+					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
+				cliente_actual.setCIFNIF(c.getCIFNIF());
+				cliente_actual.setDireccionFacturacion(c.getDireccionFacturacion());
+				cliente_actual.setNombreCliente(c.getNombreCliente());
+				cliente_actualizado = clienteServices.insert(cliente_actual);
+			} else {
+				if (StringUtils.isEmpty(error.getLitError())) {
+					response.put("Mensaje", "Por favor revise los valores enviados");
+					response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
+				} else {
+					response.put("Mensaje", error.getLitError());
+					response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
+					return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			}
+			response.put("Mensaje", "El cliente ha sido actualizado con éxito!");
+			response.put("Cliente:", cliente_actualizado);
+
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		}	
 	}
 	
-	//METODO BORRAR POR IDD
+	//METODO BORRAR POR ID
 	@DeleteMapping("borrarCliente/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id)
 	{
 		clienteServices.deletebyId(id);
 		response.put("Mensaje", "Cliente borrado con éxito");
+		response.put("Código de Error", CodigosErrorRest.COD_ERROR_CERO);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 	

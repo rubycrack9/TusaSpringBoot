@@ -6,6 +6,8 @@ public interface IClienteServices {
 	
 	public List<Clientes> getClientes();
 	
+	public List<Clientes> getClientesPaginacion();
+	
 	public Clientes insert (Clientes c);
 	
 	//public Clientes update (Clientes c, Integer id);

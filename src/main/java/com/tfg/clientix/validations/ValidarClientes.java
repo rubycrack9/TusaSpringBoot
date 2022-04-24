@@ -31,10 +31,11 @@ public class ValidarClientes {
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_OBLIGATORIO);
 		}
 		//Validar tipo de dato CIFNIF
-		if(!c.getCIFNIF().getClass().getSimpleName().equals("String")) {
+		if(isNumeric(c.getCIFNIF())) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
 		}
 		//Validar letra correcta CIFNIF
 		error = validarLetraCIFNIF(c.getCIFNIF());
