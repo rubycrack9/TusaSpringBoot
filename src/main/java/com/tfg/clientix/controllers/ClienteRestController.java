@@ -122,7 +122,7 @@ public class ClienteRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
-	//METODO BORRAR POR IDD
+	//METODO BORRAR POR ID
 	@DeleteMapping("borrarCliente/{id}")
 	public void delete(@PathVariable Integer id)
 	{
