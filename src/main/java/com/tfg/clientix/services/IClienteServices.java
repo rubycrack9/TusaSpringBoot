@@ -12,5 +12,6 @@ public interface IClienteServices {
 
 	public Clientes getClienteid(Integer id);
 	
+	public  void  deletebyId(Integer id);
 	
 }

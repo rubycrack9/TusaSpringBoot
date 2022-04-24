@@ -54,11 +54,14 @@ public class ClienteServiceImpl implements IClienteServices {
 			return clienteDao.findById(id).orElse(null);
 	}
 
-	@Transactional
-	public void delete(Integer id)
-	{
+
+
+	@Override
+	public void deletebyId(Integer id) {
 		clienteDao.deleteById(id);
+		
 	}
+
 	
 	
 	

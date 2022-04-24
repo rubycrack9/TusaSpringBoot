@@ -122,10 +122,11 @@ public class ClienteRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
+	//METODO BORRAR
 	@DeleteMapping("borrarCliente/{id}")
 	public void delete(@PathVariable Integer id)
 	{
-		clienteServices.delete(id);
+		clienteServices.deletebyId(id);
 	}
 	
 
