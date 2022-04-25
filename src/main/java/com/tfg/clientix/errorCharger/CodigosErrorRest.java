@@ -14,6 +14,7 @@ public class CodigosErrorRest
 	public static final String ERROR_CIFNIF_OBLIGATORIO = "El campo CIFNIF no puede enviarse vacio";
 	public static final String ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato cifnif es un texto";
 	public static final String ERROR_CIFNIF_ERRONEO = "La letra del CIFNIF es erronea";
+	public static final String ERROR_CIFNIF_EXISTENTE = "El CIFNIF introducido ya existe en la base de datos, por favor introduzca otro";
 	
 	public static final String ERROR_NOMBRE_CLIENTE_OBLIGATORIO = "El campo NombreCliente no puede enviarse vacio";
 	public static final String ERROR_NOMBRE_CLIENTE_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato en nombreCliente es un texto";

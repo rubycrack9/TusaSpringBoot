@@ -1,17 +1,21 @@
 package com.tfg.clientix.validations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.util.StringUtils;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
 import com.tfg.clientix.models.entity.Clientes;
+import com.tfg.clientix.services.IClienteServices;
 
 
 public class ValidarClientes {
 	
 	private static final String dniChars="TRWAGMYFPDXBNJZSQVHLCKE";
 	
-	public static ErrorRest validarCliente(Clientes c)
+	public static ErrorRest validarCliente(Clientes c,IClienteServices clienteServices)
 	{
 		ErrorRest error = new ErrorRest();
 		//Si la validacion va bien devolverá true, codigo de error 0 y literal success
@@ -39,6 +43,8 @@ public class ValidarClientes {
 		}
 		//Validar letra correcta CIFNIF
 		error = validarLetraCIFNIF(c.getCIFNIF());
+		//Validar nif existente en la base de datos
+		error = comprobarNifExistente(c.getCIFNIF(),clienteServices);
 		//Validar NombreCliente obligatorio, ni vacio ni null
 		if(StringUtils.isEmpty(c.getNombreCliente())
 				|| c.getNombreCliente() == null)
@@ -108,5 +114,28 @@ public class ValidarClientes {
 			return false;
 		}
 	} 
+	private static ErrorRest comprobarNifExistente(String cifnif, IClienteServices clienteServices) {
+		ErrorRest error = new ErrorRest();
+		List<Clientes> clientesConsultados = new ArrayList<>();	
+		
+		clientesConsultados = clienteServices.getClientes();
+		
+		for(Clientes cliente : clientesConsultados) {
+			if(cliente.getCIFNIF().equals(cifnif)) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE);
+				break;
+			}else {
+	        	error.setValidado(true);
+	    		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+	    		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+	        }
+		}
+		
+		
+		
+		return error;
+	}
 	
 }

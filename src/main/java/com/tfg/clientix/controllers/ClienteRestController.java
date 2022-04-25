@@ -51,7 +51,7 @@ public class ClienteRestController {
 		ErrorRest error = new ErrorRest();
 		Map<String, Object> response = new HashMap<>();
 
-		error = ValidarClientes.validarCliente(c);
+		error = ValidarClientes.validarCliente(c,clienteServices);
 
 		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
@@ -116,7 +116,7 @@ public class ClienteRestController {
 		}else {
 			ErrorRest error = new ErrorRest();
 
-			error = ValidarClientes.validarCliente(c);
+			error = ValidarClientes.validarCliente(c,clienteServices);
 
 			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
