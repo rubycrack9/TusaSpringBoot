@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.models.dao.IClienteDao;
 import com.tfg.clientix.models.entity.Clientes;
 
@@ -20,6 +19,7 @@ public class ClienteServiceImpl implements IClienteServices {
 	@Autowired
 	private IClienteDao clienteDao;
 	private Clientes c;
+	@Autowired
 	private EntityManager entityManager;
 
 	@Override
@@ -54,20 +54,30 @@ public class ClienteServiceImpl implements IClienteServices {
                  
 	public boolean consultarNIFExistente(String cifnif) {
 		List<Clientes> listaCIFNIF = new ArrayList<Clientes>() ;
-		boolean existe = true;
-		
-		TypedQuery<Clientes> consultaNif = entityManager.createNamedQuery("clientes.CIFNIF", Clientes.class);
-		listaCIFNIF = consultaNif.setParameter("CIFNIF",cifnif).getResultList();
-		
-		for (Clientes clientes : listaCIFNIF) {
-			if(clientes.getCIFNIF().equals(cifnif)) {
-				existe = true;
-				break;
+		Clientes clienteRecuperado = null;
+		boolean existe = false;
+		try {
+			Query consultaNif = entityManager.createQuery("SELECT u FROM clientes u WHERE u.CIFNIF=: CIFNIF");
+			consultaNif.setParameter("CIFNIF", cifnif);
+			clienteRecuperado = (Clientes)consultaNif.getSingleResult();
+			if(clienteRecuperado == null) {
+				return existe = false;
 			}else {
-	        	existe = false;
-	        }
+				listaCIFNIF.add(clienteRecuperado);
+				for (Clientes clientes : listaCIFNIF) {
+					if(clientes.getCIFNIF().equals(cifnif)) {
+						existe = true;
+						break;
+					}else {
+			        	existe = false;
+			        }
+				}
+			}	
+			return existe;
+		}catch (Exception e) {
+			return existe;
 		}
-		return existe;
+		
 	}
 
 

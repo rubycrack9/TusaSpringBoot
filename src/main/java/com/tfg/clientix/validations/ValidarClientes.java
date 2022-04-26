@@ -1,8 +1,5 @@
 package com.tfg.clientix.validations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.util.StringUtils;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
@@ -13,7 +10,7 @@ import com.tfg.clientix.services.IClienteServices;
 
 public class ValidarClientes {
 	
-	private static final String dniChars="TRWAGMYFPDXBNJZSQVHLCKE";
+	private static final String dniChars="TRWAGMYFPDXBNJZSQVHLCKE";  
 	
 	public static ErrorRest validarCliente(Clientes c,IClienteServices clienteServices)
 	{
@@ -23,8 +20,8 @@ public class ValidarClientes {
 		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
 		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
 		
-		int longitudMaximaNombre = 25;
-		int longitudMaximaDireccion = 30;
+		int longitudMaximaNombre = 50;
+		int longitudMaximaDireccion = 100;
 		
 		//Validar CIFNIF obligatorio, ni vacio ni null
 		if(StringUtils.isEmpty(c.getCIFNIF())
@@ -90,6 +87,7 @@ public class ValidarClientes {
 	}
 	public static ErrorRest validarLetraCIFNIF(String cifnif) {
 		
+		
 		ErrorRest error = new ErrorRest();
 		
 		String intPartDNI = cifnif.trim().replaceAll(" ", "").substring(0, 8);
@@ -130,6 +128,7 @@ public class ValidarClientes {
 		
 		return error;
 	}
+	
 	
 }
 

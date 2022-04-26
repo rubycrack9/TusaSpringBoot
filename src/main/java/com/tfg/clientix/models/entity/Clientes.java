@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import org.springframework.validation.annotation.Validated;
 
-@Entity
+@Entity(name = "clientes")
 @Table(name = "clientes")
 public class Clientes implements Serializable{
 

@@ -5,7 +5,8 @@ import javax.persistence.Table;
 @Table(name = "estadosenvio")
 public class EstadoServicio {
 
-	public String IdEstadoEnvio, DescripcionEstado;
+	public String IdEstadoEnvio;
+	public String DescripcionEstado;
 
 	public EstadoServicio() {
 
