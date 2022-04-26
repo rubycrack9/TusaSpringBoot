@@ -116,26 +116,21 @@ public class ValidarClientes {
 	} 
 	private static ErrorRest comprobarNifExistente(String cifnif, IClienteServices clienteServices) {
 		ErrorRest error = new ErrorRest();
-		List<Clientes> clientesConsultados = new ArrayList<>();	
-		
-		clientesConsultados = clienteServices.getClientes();
-		
-		for(Clientes cliente : clientesConsultados) {
-			if(cliente.getCIFNIF().equals(cifnif)) {
-				error.setValidado(false);
-				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-				error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE);
-				break;
-			}else {
-	        	error.setValidado(true);
-	    		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
-	    		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
-	        }
-		}
-		
-		
+		if (clienteServices.consultarNIFExistente(cifnif))
+		{
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE);
+			
+		}else {
+        	error.setValidado(true);
+    		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+    		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+        }
 		
 		return error;
 	}
 	
 }
+
+	

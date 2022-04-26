@@ -16,4 +16,5 @@ public interface IClienteServices {
 	
 	public  void  deletebyId(Integer id);
 	
+	public boolean consultarNIFExistente(String cifnif);
 }
