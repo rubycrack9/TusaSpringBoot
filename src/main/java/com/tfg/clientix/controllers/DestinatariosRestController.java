@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.util.StringUtils;
+import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
-import com.tfg.clientix.models.entity.Clientes;
 import com.tfg.clientix.models.entity.Destinatarios;
 import com.tfg.clientix.services.IDestinatariosServices;
+import com.tfg.clientix.validations.Validaciones;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -41,25 +42,27 @@ public class DestinatariosRestController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> insert(@RequestBody Destinatarios d) {
 
-		Clientes cliente_nuevo = null;
+		Destinatarios destinatarioNuevo = null;
 		ErrorRest error = new ErrorRest();
 		Map<String, Object> response = new HashMap<>();
 
-		destinatariosService.insertDestinatarios(d);
+		
+		error = Validaciones.validarDestinatario(d, destinatariosService);
 
-		/*
-		 * error = ValidarClientes.validarCliente(c,destinatariosService);
-		 * 
-		 * if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO) &&
-		 * error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) &&
-		 * error.isValidado()) { cliente_nuevo = clienteServices.insert(c); } else { if
-		 * (StringUtils.isEmpty(error.getLitError())) { response.put("Mensaje",
-		 * "Por favor revise los valores enviados"); response.put("Código de error:",
-		 * CodigosErrorRest.COD_ERROR_DEFECTO); } else { response.put("Mensaje",
-		 * error.getLitError()); response.put("Código de error:",
-		 * CodigosErrorRest.COD_ERROR_UNO); return new ResponseEntity<Map<String,
-		 * Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR); } }
-		 */
+		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
+				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
+			destinatarioNuevo = destinatariosService.insertDestinatarios(d);
+		} else {
+			if (StringUtils.isEmpty(error.getLitError())) {
+				response.put("Mensaje", "Por favor revise los valores enviados");
+				response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
+			} else {
+				response.put("Mensaje", error.getLitError());
+				response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		 
 
 		return new ResponseEntity<Destinatarios>(d, HttpStatus.CREATED);
 

@@ -23,7 +23,7 @@ import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
 import com.tfg.clientix.models.entity.Clientes;
 import com.tfg.clientix.services.IClienteServices;
-import com.tfg.clientix.validations.ValidarClientes;
+import com.tfg.clientix.validations.Validaciones;
 import org.springframework.util.StringUtils;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
@@ -51,7 +51,7 @@ public class ClienteRestController {
 		ErrorRest error = new ErrorRest();
 		Map<String, Object> response = new HashMap<>();
 
-		error = ValidarClientes.validarCliente(c,clienteServices);
+		error = Validaciones.validarCliente(c,clienteServices);
 
 		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
@@ -116,7 +116,7 @@ public class ClienteRestController {
 		}else {
 			ErrorRest error = new ErrorRest();
 
-			error = ValidarClientes.validarCliente(c,clienteServices);
+			error = Validaciones.validarCliente(c,clienteServices);
 
 			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {

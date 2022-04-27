@@ -14,5 +14,7 @@ public interface IDestinatariosServices {
 	
 	public  void  deletebyId(Integer id);
 	
+	public boolean consultarNIFExistente(String cifnif, int idcliente);
+	
 
 }
