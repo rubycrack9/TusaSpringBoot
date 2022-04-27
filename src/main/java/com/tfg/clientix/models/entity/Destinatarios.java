@@ -1,5 +1,6 @@
 package com.tfg.clientix.models.entity;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.ForeignKey;
 
+@Entity(name = "destinatarios")
 @Table(name = "destinatarios")
 public class Destinatarios {
 
@@ -17,9 +19,9 @@ public class Destinatarios {
 	private Integer idDestinatario;
 	private String NombreDestinatario;
 	private String DNINIF;
-	@ManyToOne
-	@JoinColumn(name = "idCliente_FK")
-	private Integer idcliente;
+	@ManyToOne(targetEntity = Clientes.class)
+	@JoinColumn(name = "idcliente")
+	private Clientes cliente;
 	private String CodigoPostal;
 	private String DireccionCompleta;
 
@@ -37,7 +39,6 @@ public class Destinatarios {
 		this.idDestinatario = idDestinatario;
 		this.NombreDestinatario = NombreDestinatario;
 		this.DNINIF = DNINIF;
-		this.idcliente = idcliente;
 		this.CodigoPostal = CodigoPostal;
 		this.DireccionCompleta = DireccionCompleta;
 
@@ -67,14 +68,6 @@ public class Destinatarios {
 		DNINIF = dNINIF;
 	}
 
-	public int getIdcliente() {
-		return idcliente;
-	}
-
-	public void setIdcliente(int idcliente) {
-		this.idcliente = idcliente;
-	}
-
 	public String getCodigoPostal() {
 		return CodigoPostal;
 	}
@@ -90,5 +83,13 @@ public class Destinatarios {
 	public void setDireccionCompleta(String direccionCompleta) {
 		DireccionCompleta = direccionCompleta;
 	}
+	public Clientes getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Clientes cliente) {
+		this.cliente = cliente;
+	}
+
 
 }
