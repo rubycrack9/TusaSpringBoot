@@ -49,6 +49,7 @@ public class ClienteServiceImpl implements IClienteServices {
 	@Override
 	public List<Clientes> getClientesPaginacion() {
 		//Esto en un futuro hay que hacerlo
+		//Lo vamos a hacer en angular
 		return null;
 	}
                  

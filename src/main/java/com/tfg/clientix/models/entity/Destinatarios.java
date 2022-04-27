@@ -1,13 +1,24 @@
 package com.tfg.clientix.models.entity;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
 
 @Table(name = "destinatarios")
 public class Destinatarios {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idDestinatario;
 	private String NombreDestinatario;
 	private String DNINIF;
+	@ManyToOne
+	@JoinColumn(name = "idCliente_FK")
 	private Integer idcliente;
 	private String CodigoPostal;
 	private String DireccionCompleta;
