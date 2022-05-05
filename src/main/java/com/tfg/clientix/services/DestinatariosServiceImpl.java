@@ -1,17 +1,19 @@
 package com.tfg.clientix.services;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tfg.clientix.models.dao.IDestinatariosDao;
-import com.tfg.clientix.models.entity.Clientes;
 import com.tfg.clientix.models.entity.Destinatarios;
 
 @Service
@@ -52,27 +54,21 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 
 	@Override
 	public boolean consultarNIFExistente(String dninif, int idcliente) {
-		List<Destinatarios> listaCIFNIF = new ArrayList<Destinatarios>() ;
-		Destinatarios destinatarioRecuperado = null;
 		boolean existe = false;
 		try {
-			Query consultaNif = entityManager.createQuery("SELECT d FROM destinatarios d,clientes c WHERE c.idCliente=d.idcliente AND c.idCliente=: idcliente AND d.DNINIF=: DNINIF");
-			consultaNif.setParameter("DNINIF", dninif);
-			consultaNif.setParameter("idcliente", idcliente);
-			destinatarioRecuperado = (Destinatarios)consultaNif.getSingleResult();
-			if(destinatarioRecuperado == null) {
-				return existe = false;
-			}else {
-				listaCIFNIF.add(destinatarioRecuperado);
-				for (Destinatarios destinatario : listaCIFNIF) {
-					if(destinatario.getDNINIF().equals(dninif)) {
-						existe = true;
-						break;
-					}else {
-			        	existe = false;
-			        }
-				}
-			}	
+			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
+			 String SQL = "select d.DNINIF from destinatarios d , clientes c where c.idCliente = d.idcliente and c.idCliente = "+idcliente+" and d.DNINIF = '"+dninif+"'";
+			 Statement stmt = con.createStatement();
+			 ResultSet rs = stmt.executeQuery(SQL);
+			 if(rs.next()) {
+				 String nif = rs.getString("DNINIF");
+				 
+				 if(nif.equals(dninif)) {
+					 existe = true;
+				 }else {
+					 existe = false;
+				 }
+			 } 
 			return existe;
 		}catch (Exception e) {
 			return existe;
