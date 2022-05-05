@@ -101,6 +101,8 @@ public class ClienteRestController {
 	public List<Clientes> getClientesPaginacion(@PathVariable Integer registroInicial, @PathVariable Integer numRegistros){
 		
 	}*/
+	
+	
 	//ACTUALIZAR CLIENTE
 	@PutMapping("/actualizarCliente/{id}")
 	public ResponseEntity<?> update(@RequestBody Clientes c, @PathVariable Integer id) {

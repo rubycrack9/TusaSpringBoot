@@ -72,6 +72,31 @@ public class DestinatariosRestController {
 		return new ResponseEntity<Destinatarios>(d, HttpStatus.CREATED);
 
 	}
+	//CONSULTAR TODOS LOS DESTINATARIOS POR EL ID DE CLIENTE
+	@GetMapping("/destinatariosCliente/{id}")
+	public ResponseEntity<?>mostrarDestintarios(@PathVariable Integer id)
+	{
+		Destinatarios d = null;
+		Map<String, Object> response = new HashMap<>();
+		try {
+			d = destinatariosService.consultarDestinatariosIdCliente(id);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		if (d == null) {
+			response.put("Mensaje",
+					"El cliente con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<Destinatarios>(d, HttpStatus.OK);
+	}
+	
+	
+	
 	//CONSULTAR UN DESTINATARIO POR ID
 	@GetMapping("/destinatarios/{id}")
 	public ResponseEntity<?> mostrarporId(@PathVariable Integer id) {
