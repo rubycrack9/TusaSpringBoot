@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.validation.annotation.Validated;
-
 @Entity(name = "clientes")
 @Table(name = "clientes")
 public class Clientes implements Serializable{
