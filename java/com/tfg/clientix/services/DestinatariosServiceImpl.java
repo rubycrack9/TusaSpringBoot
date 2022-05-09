@@ -76,6 +76,7 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 		}
 	}
 
+	//CONSULTAR
 	public Destinatarios consultarDestinatariosIdCliente(Integer idCliente) {
 	List<Destinatarios> listaDestinatarios = new ArrayList<Destinatarios>();
 	Destinatarios destinatarioRecuperado = null;
