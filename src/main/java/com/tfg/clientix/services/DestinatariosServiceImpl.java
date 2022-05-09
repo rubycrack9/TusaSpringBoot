@@ -77,13 +77,16 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 	}
 
 	//CONSULTAR
-	public Destinatarios consultarDestinatariosIdCliente(Integer idCliente) {
+	public List<Destinatarios> consultarDestinatariosIdCliente(Integer idCliente) {
 	List<Destinatarios> listaDestinatarios = new ArrayList<Destinatarios>();
 	Destinatarios destinatarioRecuperado = null;
-	Query getDestinatariosIdCliente = entityManager.createQuery("SELECT u FROM destinatarios u WHERE u.idcliente=: idcliente");
+	Query getDestinatariosIdCliente = entityManager.createQuery("SELECT u FROM destinatarios u WHERE u.idcliente =: idcliente");
 	getDestinatariosIdCliente.setParameter("idcliente", idCliente);
-	listaDestinatarios.add((Destinatarios) getDestinatariosIdCliente.getResultList());
-	return  (Destinatarios) listaDestinatarios;
+	for(Object destinatarioRecuperadoSi : getDestinatariosIdCliente.getResultList()) {
+		destinatarioRecuperado = (Destinatarios)destinatarioRecuperadoSi;
+		listaDestinatarios.add(destinatarioRecuperado);
+	}
+	return listaDestinatarios;
 	
 	}
 }

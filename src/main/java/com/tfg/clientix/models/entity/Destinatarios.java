@@ -1,5 +1,6 @@
 package com.tfg.clientix.models.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,6 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CollectionId;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "destinatarios")
 @Table(name = "destinatarios")
@@ -22,6 +27,18 @@ public class Destinatarios {
 	private Clientes cliente;
 	private String CodigoPostal;
 	private String DireccionCompleta;
+	@Column(name= "idcliente", insertable = false, updatable = false)
+	@JsonIgnore
+	private int idcliente;
+	
+
+	public int getIdcliente() {
+		return idcliente;
+	}
+
+	public void setIdcliente(int idcliente) {
+		this.idcliente = idcliente;
+	}
 
 	public Destinatarios() {
 

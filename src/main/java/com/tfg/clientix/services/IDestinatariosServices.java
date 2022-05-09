@@ -19,7 +19,7 @@ public interface IDestinatariosServices {
 	public boolean consultarNIFExistente(String cifnif, int idcliente);
 	
 	//
-	public Destinatarios consultarDestinatariosIdCliente(Integer idCliente);
+	public List<Destinatarios> consultarDestinatariosIdCliente(Integer idCliente);
 	
 
 }
