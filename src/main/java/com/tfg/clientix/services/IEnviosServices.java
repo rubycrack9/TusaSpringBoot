@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.tfg.clientix.models.entity.Envios;
 
-public interface IEnviosService {
+public interface IEnviosServices {
 	
 	public List<Envios> getEnvios();
 	
@@ -13,5 +13,7 @@ public interface IEnviosService {
 	public Envios getEnvioId(Integer id);
 	
 	public  void  deletebyId(Integer id);
+
+	public boolean consultarNIFExistenteparaesecliente(String dninif, int idcliente);
 
 }

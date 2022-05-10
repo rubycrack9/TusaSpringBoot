@@ -65,9 +65,9 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 				 String nif = rs.getString("DNINIF");
 				 
 				 if(nif.equals(dninif)) {
-					 existe = true;
+					 existe = false ;
 				 }else {
-					 existe = false;
+					 existe = true;
 				 }
 			 } 
 			return existe;

@@ -9,6 +9,7 @@ import com.tfg.clientix.models.entity.Destinatarios;
 import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IClienteServices;
 import com.tfg.clientix.services.IDestinatariosServices;
+import com.tfg.clientix.services.IEnviosServices;
 
 
 public class Validaciones {
@@ -248,6 +249,84 @@ public class Validaciones {
 		
 		return error;
 	}
+	
+	public static ErrorRest validarEnvio(Envios e,IEnviosServices envioServices)
+	{
+		ErrorRest error = new ErrorRest();
+		//Si la validacion va bien devolverá true, codigo de error 0 y literal success
+		error.setValidado(true);
+		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+		
+		int longitudMaximaNombre = 50;
+		int longitudMaximaDireccion = 100;
+		
+		//Validar CIFNIF obligatorio, ni vacio ni null
+		if(StringUtils.isEmpty(e.getDNINIF())
+				|| e.getDNINIF() == null)
+		{
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_OBLIGATORIO);
+		}
+		//Validar tipo de dato CIFNIF
+		if(isNumeric(e.getDNINIF())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
+		}
+		//Validar letra correcta CIFNIF
+		error = validarLetraCIFNIF(e.getDNINIF());
+		//Validar nif existente en la base de datos
+		error = comprobarNifExistenteDestinatarios(e.getDNINIF(),envioServices);
+			//Validar NombreCliente obligatorio, ni vacio ni null
+		if(StringUtils.isEmpty(c.getNombreCliente())
+				|| c.getNombreCliente() == null)
+		{
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_OBLIGATORIO);
+		}
+		//Validar tipo de dato NombreDestinatario
+		if(isNumeric(e.getNombreDestinatario())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_TIPO_DE_DATO_INCORRECTO);
+		}
+		//Validar longitud máxima NombreDestinatario
+		if(e.getNombreDestinatario().length() > longitudMaximaNombre ) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_TAMANO_MAXIMO);
+		}
+		//Validar direccion obligatorio, ni vacio ni null
+		if(StringUtils.isEmpty(e.getDireccionCompleta())
+				|| e.getDireccionCompleta() == null)
+		{
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_OBLIGATORIO);
+		}
+		//Validar tipo de dato direccion
+		if(isNumeric(e.getDireccionCompleta())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TIPO_DE_DATO_INCORRECTO);
+		}
+		//Validar longitud máxima direccion
+		if(e.getDireccionCompleta().length() > longitudMaximaDireccion ) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TAMANO_MAXIMO);
+		}
+		
+		return error;	
+		
+	}
+	
+	
+	
 	
 	
 }

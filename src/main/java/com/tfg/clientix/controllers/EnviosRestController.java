@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
 import com.tfg.clientix.models.entity.Envios;
-import com.tfg.clientix.services.IEnviosService;
+import com.tfg.clientix.services.IEnviosServices;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -28,7 +28,7 @@ public class EnviosRestController {
 	
 	Map<String, Object> response = new HashMap<>();
 	@Autowired
-	private IEnviosService enviosService;
+	private IEnviosServices enviosService;
 	
 	// CONSULTAR TODOS LOS ENVIOS
 	@GetMapping("/envios")
