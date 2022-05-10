@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 @Entity(name = "envios")
 @Table(name = "envios")
@@ -21,6 +23,7 @@ public class Envios implements Serializable{
 	String direccionCompleta;
 	String idEstadoEnvio;
 	Integer numIntentosEntrega;
+
 
 	public Envios() {
 
@@ -88,20 +91,19 @@ public class Envios implements Serializable{
 		this.direccionCompleta = direccionCompleta;
 	}
 
-	public String getIdEstadoEnvio() {
-		return idEstadoEnvio;
-	}
-
-	public void setIdEstadoEnvio(String idEstadoEnvio) {
-		this.idEstadoEnvio = idEstadoEnvio;
-	}
-
 	public Integer getNumIntentosEntrega() {
 		return numIntentosEntrega;
 	}
 
 	public void setNumIntentosEntrega(Integer numIntentosEntrega) {
 		this.numIntentosEntrega = numIntentosEntrega;
+	}
+	public String getIdEstadoEnvio() {
+		return idEstadoEnvio;
+	}
+
+	public void setIdEstadoEnvio(String idEstadoEnvio) {
+		this.idEstadoEnvio = idEstadoEnvio;
 	}
 
 }

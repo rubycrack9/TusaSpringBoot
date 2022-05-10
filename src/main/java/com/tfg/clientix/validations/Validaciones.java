@@ -6,6 +6,7 @@ import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
 import com.tfg.clientix.models.entity.Clientes;
 import com.tfg.clientix.models.entity.Destinatarios;
+import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IClienteServices;
 import com.tfg.clientix.services.IDestinatariosServices;
 
@@ -171,6 +172,17 @@ public class Validaciones {
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TAMANO_MAXIMO);
 		}
+		
+		
+		
+		return error;
+	}
+	public static ErrorRest validarEnvio(Envios e) {
+		ErrorRest error = new ErrorRest();
+		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
+		error.setValidado(true);
+		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
 		
 		
 		
