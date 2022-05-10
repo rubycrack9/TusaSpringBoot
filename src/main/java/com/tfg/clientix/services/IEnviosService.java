@@ -8,7 +8,7 @@ public interface IEnviosService {
 	
 	public List<Envios> getEnvios();
 	
-	public Envios insert (Envios c);
+	public Envios insertEnvios (Envios c);
 
 	public Envios getEnvioId(Integer id);
 	

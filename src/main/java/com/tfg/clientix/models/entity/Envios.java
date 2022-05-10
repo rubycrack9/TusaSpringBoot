@@ -1,10 +1,18 @@
 package com.tfg.clientix.models.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
+@Entity(name = "envios")
 @Table(name = "envios")
-public class Envios {
+public class Envios implements Serializable{
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer idEnvio;
 	Integer idCliente;
 	String nombreDestinatario;

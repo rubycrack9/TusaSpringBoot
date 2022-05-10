@@ -2,8 +2,6 @@ package com.tfg.clientix.services;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
-
 import com.tfg.clientix.models.entity.Destinatarios;
 
 public interface IDestinatariosServices {
