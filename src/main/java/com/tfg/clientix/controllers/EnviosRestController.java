@@ -20,6 +20,7 @@ import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
 import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IEnviosServices;
+import com.tfg.clientix.validations.Validaciones;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -44,11 +45,9 @@ public class EnviosRestController {
 		ErrorRest error = new ErrorRest();
 		Map<String, Object> response = new HashMap<>();
 		
-		//error = Validaciones.validarEnvios(e, enviosService);
-		
-		envioNuevo = enviosService.insertEnvios(e);
-		
-		/*if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
+		error = Validaciones.validarEnvio(e, enviosService);
+	
+		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
 			envioNuevo = enviosService.insertEnvios(e);
 		} else {
@@ -60,7 +59,7 @@ public class EnviosRestController {
 				response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}	*/
+		}	
 	return new ResponseEntity<Envios>(e, HttpStatus.CREATED);
 
 	}

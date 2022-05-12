@@ -236,7 +236,7 @@ public class Validaciones {
 		if (envioServices.consultarNIFExistenteparaesecliente(dninif, idcliente)) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE_ENVIO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE);
 		} else {
 			error.setValidado(true);
 			error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
@@ -320,7 +320,7 @@ public class Validaciones {
 
 		// Validar idEstadoEnvio
 		// en la bd esta INT PERO AL NO TRATAR EL DATO PUES STRING?
-		if (isNumeric(e.getIdEstadoEnvio())) {
+		if (!isNumeric(e.getIdEstadoEnvio())) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TIPO);
@@ -328,7 +328,7 @@ public class Validaciones {
 
 		// Validar idEstadoEnvio
 		// en la bd esta INT PERO AL NO TRATAR EL DATO PUES STRING?
-		if (isNumeric(e.getNumIntentosEntrega())) {
+		if (!isNumeric(e.getNumIntentosEntrega().toString())) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TIPO);
