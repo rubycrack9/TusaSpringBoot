@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -39,7 +40,7 @@ public class EnviosServiceImpl implements IEnviosServices{
 	}
 
 	@Override
-	public List<Object> getEstadoEnvioPorId(Integer id) {
+	public List<Envios> getEstadoEnvioPorId(Integer id) {
 		List<Envios> listaEnvios = new ArrayList<Envios>();
 		List<Object> estadoamostrar = new ArrayList<Object>();
 		Envios enviorecuperado = null;
@@ -48,6 +49,11 @@ public class EnviosServiceImpl implements IEnviosServices{
 			Query consultaEstado = entityManager.createQuery("SELECT u FROM envios u WHERE u.idEnvio=: idEnvio");
 			consultaEstado.setParameter("idEnvio", id);
 			enviorecuperado = (Envios)consultaEstado.getSingleResult();
+			if (enviorecuperado == null) {
+				System.err.println("NO EXISTE ESE ID DE ENVIO");
+			}else {
+				listaEnvios.add(enviorecuperado);
+			}
 			if(enviorecuperado.getIdEnvio() == 1)
 			{
 				estadoenvio = "ENTREGADO AL DESTINATARIO";
@@ -58,18 +64,15 @@ public class EnviosServiceImpl implements IEnviosServices{
 			{
 				estadoenvio = "EN LA OFICINA DE ENTREGA";
 			}
-			if (enviorecuperado == null) {
-				System.err.println("NO EXISTE ESE ID DE ENVIO");
-			}else {
-				listaEnvios.add(enviorecuperado);
-			}
-			estadoamostrar.add(estadoenvio);
-			estadoamostrar.add(enviorecuperado.getNumIntentosEntrega());
+			for (Envios envio : listaEnvios) {
+				envio.setIdEstadoEnvio(estadoenvio);	
+				}
+			//estadoamostrar.add(enviorecuperado.getNumIntentosEntrega());
 			
 		} catch (Exception e) {
 			e.getMessage();
 		}
-		return estadoamostrar;
+		return listaEnvios;
 	}
 
 	@Override

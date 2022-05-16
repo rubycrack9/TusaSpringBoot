@@ -76,7 +76,7 @@ public class EnviosRestController {
 	{
 		//Envios e = null;
 		Map<String, Object> response = new HashMap<>();
-		List<Object> estadoEnvios = new ArrayList<Object>();
+		List<Envios> estadoEnvios = new ArrayList<Envios>();
 		try {
 			estadoEnvios = enviosService.getEstadoEnvioPorId(id);
 		} catch (DataAccessException e) {
@@ -90,9 +90,9 @@ public class EnviosRestController {
 					"El envío con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		response.put("Estado del envío: ", estadoEnvios.get(0));
-		response.put("Número de intentos de entrega", estadoEnvios.get(1));
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		//response.put("Estado del envío: ", estadoEnvios.get(0));
+		//response.put("Número de intentos de entrega", estadoEnvios.get(1));
+		return new ResponseEntity<>(estadoEnvios,HttpStatus.OK);
 	}
 
 	// ACTUALIZAR DESTINATARIO

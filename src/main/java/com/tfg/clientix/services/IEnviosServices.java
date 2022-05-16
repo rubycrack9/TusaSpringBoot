@@ -16,6 +16,6 @@ public interface IEnviosServices {
 
 	public boolean consultarNIFExistenteparaesecliente(String dninif, int idcliente);
 
-	public List<Object> getEstadoEnvioPorId(Integer id);
+	public List<Envios> getEstadoEnvioPorId(Integer id);
 
 }
