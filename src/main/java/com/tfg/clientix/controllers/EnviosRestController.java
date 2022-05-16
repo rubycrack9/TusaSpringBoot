@@ -1,15 +1,19 @@
 package com.tfg.clientix.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
+import com.tfg.clientix.models.entity.Destinatarios;
 import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IEnviosServices;
 import com.tfg.clientix.validations.Validaciones;
@@ -63,5 +68,31 @@ public class EnviosRestController {
 	return new ResponseEntity<Envios>(e, HttpStatus.CREATED);
 
 	}
+	
+	
+	//CONSULTAR ESTADO ENVIO
+	@GetMapping("estadoenvio/{id}")
+	public ResponseEntity<?> getEstadoEnvio(@PathVariable Integer id)
+	{
+		//Envios e = null;
+		Map<String, Object> response = new HashMap<>();
+		List<Object> estadoEnvios = new ArrayList<Object>();
+		try {
+			estadoEnvios = enviosService.getEstadoEnvioPorId(id);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
+		}
+		if (CollectionUtils.isEmpty(estadoEnvios)) {
+			response.put("Mensaje",
+					"El envío con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		response.put("Estado del envío: ", estadoEnvios.get(0));
+		response.put("Número de intentos de entrega", estadoEnvios.get(1));
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
 }

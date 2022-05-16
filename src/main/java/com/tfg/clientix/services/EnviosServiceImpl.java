@@ -39,9 +39,37 @@ public class EnviosServiceImpl implements IEnviosServices{
 	}
 
 	@Override
-	public Envios getEnvioId(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Object> getEstadoEnvioPorId(Integer id) {
+		List<Envios> listaEnvios = new ArrayList<Envios>();
+		List<Object> estadoamostrar = new ArrayList<Object>();
+		Envios enviorecuperado = null;
+		String estadoenvio = null;
+		try {
+			Query consultaEstado = entityManager.createQuery("SELECT u FROM envios u WHERE u.idEnvio=: idEnvio");
+			consultaEstado.setParameter("idEnvio", id);
+			enviorecuperado = (Envios)consultaEstado.getSingleResult();
+			if(enviorecuperado.getIdEnvio() == 1)
+			{
+				estadoenvio = "ENTREGADO AL DESTINATARIO";
+			}
+			else if (enviorecuperado.getIdEnvio() == 2)
+			{estadoenvio = "EN OFICINA";}
+			else 
+			{
+				estadoenvio = "EN LA OFICINA DE ENTREGA";
+			}
+			if (enviorecuperado == null) {
+				System.err.println("NO EXISTE ESE ID DE ENVIO");
+			}else {
+				listaEnvios.add(enviorecuperado);
+			}
+			estadoamostrar.add(estadoenvio);
+			estadoamostrar.add(enviorecuperado.getNumIntentosEntrega());
+			
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return estadoamostrar;
 	}
 
 	@Override

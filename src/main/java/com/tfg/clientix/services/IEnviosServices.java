@@ -10,10 +10,12 @@ public interface IEnviosServices {
 	
 	public Envios insertEnvios (Envios c);
 
-	public Envios getEnvioId(Integer id);
+	//public Envios getEnvioId(Integer id);
 	
 	public  void  deletebyId(Integer id);
 
 	public boolean consultarNIFExistenteparaesecliente(String dninif, int idcliente);
+
+	public List<Object> getEstadoEnvioPorId(Integer id);
 
 }
