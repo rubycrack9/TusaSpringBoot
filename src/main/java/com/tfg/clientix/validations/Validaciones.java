@@ -24,6 +24,7 @@ public class Validaciones {
 
 		int longitudMaximaNombre = 50;
 		int longitudMaximaDireccion = 100;
+		int longitud_maxima_dni = 9;
 
 		// Validar CIFNIF obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(c.getCIFNIF()) || c.getCIFNIF() == null) {
@@ -36,6 +37,12 @@ public class Validaciones {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
+		}
+		if(c.getCIFNIF().length() > longitud_maxima_dni) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
 			return error;
 		}
 		// Validar letra correcta CIFNIF
@@ -92,6 +99,7 @@ public class Validaciones {
 		int longitudMaxNombreDestinatario = 50;
 		int longitudMaxDireccionCompleta = 100;
 		int longitudMaxCodigoPostal = 5;
+		int longitud_maxima_dni = 9;
 
 		// Validar DNINIF obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(d.getDNINIF()) || d.getDNINIF() == null) {
@@ -104,6 +112,12 @@ public class Validaciones {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
+		}
+		if(d.getDNINIF().length() > longitud_maxima_dni) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
 			return error;
 		}
 		// Validar letra correcta DNINIF
@@ -256,6 +270,7 @@ public class Validaciones {
 		int longitudMaximaNombre = 50;
 		int longitudMaximaDireccion = 100;
 		int longitud_codigo_postal = 5;
+		int longitud_maxima_dni = 9;
 
 		// Validar CIFNIF obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(e.getDNINIF()) || e.getDNINIF() == null) {
@@ -268,6 +283,12 @@ public class Validaciones {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
+		}
+		if(e.getDNINIF().length() > longitud_maxima_dni) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
 			return error;
 		}
 		// Validar letra correcta CIFNIF
