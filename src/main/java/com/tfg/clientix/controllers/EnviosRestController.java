@@ -108,7 +108,7 @@ public class EnviosRestController {
 			}
 		}
 		if (envio_Actual == null) {
-			response.put("Mensaje", "No se pudo editar, el cliente ID: "
+			response.put("Mensaje", "No se pudo editar, el envío con ID: "
 					.concat(id.toString().concat(" no existe en la base de datos")));
 			response.put("Código de error:", CodigosErrorRest.COD_ERROR_CLIENTE_NO_ENCONTRADO);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
@@ -119,14 +119,14 @@ public class EnviosRestController {
 
 			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
-				envio_actualizado.setDNINIF(e.getDNINIF());
-				envio_actualizado.setDireccionCompleta(e.getDireccionCompleta());
-				envio_actualizado.setNombreDestinatario(e.getNombreDestinatario());
-				envio_actualizado.setIdCliente(e.getIdCliente());
-				envio_actualizado.setIdEstadoEnvio(e.getIdEstadoEnvio());
-				envio_actualizado.setNumIntentosEntrega(e.getNumIntentosEntrega());
-				envio_actualizado.setCodigoPostal(e.getCodigoPostal());
-				envio_actualizado = enviosService.insertEnvios(envio_actualizado);
+				envio_Actual.setDNINIF(e.getDNINIF());
+				envio_Actual.setDireccionCompleta(e.getDireccionCompleta());
+				envio_Actual.setNombreDestinatario(e.getNombreDestinatario());
+				envio_Actual.setIdCliente(e.getIdCliente());
+				envio_Actual.setIdEstadoEnvio(e.getIdEstadoEnvio());
+				envio_Actual.setNumIntentosEntrega(e.getNumIntentosEntrega());
+				envio_Actual.setCodigoPostal(e.getCodigoPostal());
+				envio_actualizado = enviosService.insertEnvios(envio_Actual);
 			} else {
 				if (StringUtils.isEmpty(error.getLitError())) {
 					response.put("Mensaje", "Por favor revise los valores enviados");
@@ -137,9 +137,9 @@ public class EnviosRestController {
 					return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			}
-			response.put("Mensaje", "El cliente ha sido actualizado con éxito!");
+			response.put("Mensaje", "El envío ha sido actualizado con éxito!");
 			response.put("Cliente:", envio_actualizado);
-
+			
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 
