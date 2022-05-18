@@ -47,8 +47,14 @@ public class Validaciones {
 		}
 		// Validar letra correcta CIFNIF
 		error = validarLetraCIFNIF(c.getCIFNIF());
+		if(error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
+			return error;
+		}
 		// Validar nif existente en la base de datos
 		error = comprobarNifExistente(c.getCIFNIF(), clienteServices);
+		if(error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
+			return error;
+		}
 		// Validar NombreCliente obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(c.getNombreCliente()) || c.getNombreCliente() == null) {
 			error.setValidado(false);
@@ -89,6 +95,62 @@ public class Validaciones {
 		return error;
 	}
 
+	public static ErrorRest validarClienteActualizar(Clientes c, IClienteServices clienteServices) {
+		ErrorRest error = new ErrorRest();
+		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
+		error.setValidado(true);
+		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+
+		int longitudMaximaNombre = 50;
+		int longitudMaximaDireccion = 100;
+		int longitud_maxima_dni = 9;
+		
+		// Validar NombreCliente obligatorio, ni vacio ni null
+		if (StringUtils.isEmpty(c.getNombreCliente()) || c.getNombreCliente() == null) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_OBLIGATORIO);
+		}
+		// Validar tipo de dato NombreCliente
+		if (isNumeric(c.getNombreCliente())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_TIPO_DE_DATO_INCORRECTO);
+		}
+		// Validar longitud máxima NombreCliente
+		if (c.getNombreCliente().length() > longitudMaximaNombre) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_NOMBRE_CLIENTE_TAMANO_MAXIMO);
+		}
+		// Validar direccion obligatorio, ni vacio ni null
+		if (StringUtils.isEmpty(c.getDireccionFacturacion()) || c.getDireccionFacturacion() == null) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_OBLIGATORIO);
+		}
+		// Validar tipo de dato direccion
+		if (isNumeric(c.getDireccionFacturacion())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TIPO_DE_DATO_INCORRECTO);
+		}
+		// Validar longitud máxima direccion
+		if (c.getNombreCliente().length() > longitudMaximaDireccion) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TAMANO_MAXIMO);
+		}
+
+		return error;
+	}
+
+	
+	
+	
+	
+	
 	public static ErrorRest validarDestinatario(Destinatarios d, IDestinatariosServices destinatariosService) {
 		ErrorRest error = new ErrorRest();
 		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
