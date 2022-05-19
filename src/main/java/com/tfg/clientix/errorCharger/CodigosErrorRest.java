@@ -39,6 +39,7 @@ public class CodigosErrorRest
 	public static final String ERROR_CODIGO_POSTAL_TAMANO_MAXIMO = "El campo CodigoPostal ha superado su tamaño máximo de carácteres";
 	
 	public static final String ERROR_ESTADO_ENVIO_TIPO = "Este campo tiene que ser numérico, por favor revisa el formato enviado";
+	public static final String ERROR_ESTADO_ENVIO_TEXTO = "El valor del campo idEstadoEnvio es erroneo, por favor introduzca un valor valido";
 	
 	
 }

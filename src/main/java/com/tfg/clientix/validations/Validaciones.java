@@ -14,6 +14,9 @@ import com.tfg.clientix.services.IEnviosServices;
 public class Validaciones {
 
 	private static final String dniChars = "TRWAGMYFPDXBNJZSQVHLCKE";
+	private final static String EAD = "ENTREGADO AL DESTINATARIO";
+	private final static String EO = "EN OFICINA";
+	private final static String OE = "EN LA OFICINA DE ENTREGA";
 
 	public static ErrorRest validarCliente(Clientes c, IClienteServices clienteServices) {
 		ErrorRest error = new ErrorRest();
@@ -400,13 +403,18 @@ public class Validaciones {
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TAMANO_MAXIMO);
 		}
-
-		// Validar idEstadoEnvio
-		// en la bd esta INT PERO AL NO TRATAR EL DATO PUES STRING?
-		if (!isNumeric(e.getIdEstadoEnvio())) {
+		if (isNumeric(e.getIdEstadoEnvio())) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TIPO);
+		}
+		if(e.getIdEstadoEnvio().equals(EAD)
+				|| e.getIdEstadoEnvio().equals(EO)
+				|| e.getIdEstadoEnvio().equals(OE)) {
+		}else {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TEXTO);
 		}
 
 		// Validar idEstadoEnvio

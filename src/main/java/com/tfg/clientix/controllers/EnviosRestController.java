@@ -48,12 +48,24 @@ public class EnviosRestController {
 	public ResponseEntity<?> insert(@RequestBody Envios e) {
 		Envios envioNuevo = null;
 		ErrorRest error = new ErrorRest();
+		String EAD = "ENTREGADO AL DESTINATARIO";
+		String EO = "EN OFICINA";
+		String OE = "EN LA OFICINA DE ENTREGA";
 		Map<String, Object> response = new HashMap<>();
 		
 		error = Validaciones.validarEnvio(e, enviosService);
 	
 		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
+			if(e.getIdEstadoEnvio().equals(EAD)){
+				e.setIdEstadoEnvio("1");
+			}
+			else if (e.getIdEstadoEnvio().equals(EO)){
+				e.setIdEstadoEnvio("2");
+			}
+			else {
+				e.setIdEstadoEnvio("3");
+			}
 			envioNuevo = enviosService.insertEnvios(e);
 		} else {
 			if (StringUtils.isEmpty(error.getLitError())) {
@@ -65,7 +77,10 @@ public class EnviosRestController {
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}	
-	return new ResponseEntity<Envios>(e, HttpStatus.CREATED);
+		response.put("Mensaje", "El envío ha sido creado con éxito!");
+		response.put("Envio", e);
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		//return new ResponseEntity<Envios>(e, HttpStatus.CREATED);
 
 	}
 	
