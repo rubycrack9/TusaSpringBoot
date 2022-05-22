@@ -1,5 +1,14 @@
 package com.tfg.clientix.validations;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.springframework.util.StringUtils;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
@@ -17,6 +26,7 @@ public class Validaciones {
 	private final static String EAD = "ENTREGADO AL DESTINATARIO";
 	private final static String EO = "EN OFICINA";
 	private final static String OE = "EN LA OFICINA DE ENTREGA";
+	private static EntityManager entityManager;
 
 	public static ErrorRest validarCliente(Clientes c, IClienteServices clienteServices) {
 		ErrorRest error = new ErrorRest();
@@ -154,7 +164,7 @@ public class Validaciones {
 	
 	
 	
-	public static ErrorRest validarDestinatario(Destinatarios d, IDestinatariosServices destinatariosService) {
+	public static ErrorRest validarDestinatario(Destinatarios d, IDestinatariosServices destinatariosService) throws SQLException {
 		ErrorRest error = new ErrorRest();
 		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
 		error.setValidado(true);
@@ -165,12 +175,18 @@ public class Validaciones {
 		int longitudMaxDireccionCompleta = 100;
 		int longitudMaxCodigoPostal = 5;
 		int longitud_maxima_dni = 9;
-
+		
+		
+		//Validar si existe el cliente
+		error = validarSiClienteExisteCuandoCreaDestinatario(d.getCliente().getIdCliente());
+		
+		
 		// Validar DNINIF obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(d.getDNINIF()) || d.getDNINIF() == null) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_OBLIGATORIO);
+			return error;
 		}
 		// Validar tipo de dato DNINIF
 		if (isNumeric(d.getDNINIF())) {
@@ -248,6 +264,49 @@ public class Validaciones {
 		return error;
 
 	}
+	
+	
+	public static ErrorRest validarSiClienteExisteCuandoCreaDestinatario(int id) throws SQLException
+	{
+		ErrorRest error = new ErrorRest();
+			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
+			 String SQL = "select idCliente from clientes where idCliente = " +id;
+			 Statement stmt = con.createStatement();
+			 ResultSet rs = stmt.executeQuery(SQL);
+			 if(rs.next() == false)
+			 {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CLIENTE_CREAR_DESTINATARIO);
+			
+			 }
+		return error;
+		
+	}
+	
+	
+	public static ErrorRest validarSiClienteTieneDestinatarios(int id) throws SQLException
+	{
+		ErrorRest error = new ErrorRest();
+			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
+			 String SQL = "select * from destinatarios where idcliente = " +id;
+			 Statement stmt = con.createStatement();
+			 ResultSet rs = stmt.executeQuery(SQL);
+			 if(rs.next() == false)
+			 {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CLIENTE_COMPROBAR_DESTINATARIO);
+			
+			 }
+			 else {
+			 		 error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+					error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+			 }
+		return error;
+		
+	}
+	
 
 	public static ErrorRest validarLetraCIFNIF(String cifnif) {
 

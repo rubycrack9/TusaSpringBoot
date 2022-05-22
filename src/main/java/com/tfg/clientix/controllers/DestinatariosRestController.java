@@ -1,5 +1,6 @@
 package com.tfg.clientix.controllers;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +45,10 @@ public class DestinatariosRestController {
 		return destinatariosService.getAllDestinatarios();
 
 	}
-	//INSERTAR UN CLIENTE
+	//INSERTAR UN DESTINATARIO
 	@PostMapping("/insertarDestinatario")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> insert(@RequestBody Destinatarios d) {
+	public ResponseEntity<?> insert(@RequestBody Destinatarios d) throws SQLException {
 
 		Destinatarios destinatarioNuevo = null;
 		ErrorRest error = new ErrorRest();
@@ -63,6 +64,7 @@ public class DestinatariosRestController {
 			if (StringUtils.isEmpty(error.getLitError())) {
 				response.put("Mensaje", "Por favor revise los valores enviados");
 				response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			} else {
 				response.put("Mensaje", error.getLitError());
 				response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
@@ -76,10 +78,24 @@ public class DestinatariosRestController {
 	}
 	//CONSULTAR TODOS LOS DESTINATARIOS POR EL ID DE CLIENTE
 	@GetMapping("/destinatariosCliente/{id}")
-	public ResponseEntity<?>mostrarDestintarios(@PathVariable Integer id)
+	public ResponseEntity<?>mostrarDestintarios(@PathVariable Integer id) throws SQLException
 	{
+		ErrorRest error = new ErrorRest();
 		Map<String, Object> response = new HashMap<>();
+		
+		//COMPROBAR SI ESE CLIENTE TIENE DESTINATARIOS
+		
+		error = Validaciones.validarSiClienteTieneDestinatarios(id);
+		if(error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO))
+		{
+			response.put("Mensaje", error.getLitError());
+			response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		else {
+		
 		List<Destinatarios> listaDestinatarios = new ArrayList<Destinatarios>();
+		
 		try {
 			listaDestinatarios = destinatariosService.consultarDestinatariosIdCliente(id);
 		} catch (DataAccessException e) {
@@ -95,6 +111,7 @@ public class DestinatariosRestController {
 		}
 
 		return new ResponseEntity<>(listaDestinatarios,HttpStatus.OK);
+		}
 	}
 	
 	
@@ -127,7 +144,7 @@ public class DestinatariosRestController {
 
 	// ACTUALIZAR DESTINATARIO
 	@PutMapping("/actualizarDestinatario/{id}")
-	public ResponseEntity<?> update(@RequestBody Destinatarios d, @PathVariable Integer id) {
+	public ResponseEntity<?> update(@RequestBody Destinatarios d, @PathVariable Integer id) throws SQLException {
 
 		Destinatarios destinatario_actual = destinatariosService.readDestinatarios(id);
 		Destinatarios destinatario_actualizado = null;

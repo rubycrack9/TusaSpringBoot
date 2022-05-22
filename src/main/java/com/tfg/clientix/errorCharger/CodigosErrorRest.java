@@ -11,11 +11,11 @@ public class CodigosErrorRest
 	public static final String COD_ERROR_CLIENTE_NO_ENCONTRADO = "802";
 	public static final String LIT_ERROR_SUCCESS = "Success";
 	
-	public static final String ERROR_CIFNIF_OBLIGATORIO = "El campo CIFNIF no puede enviarse vacio";
-	public static final String ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato cifnif es un texto";
-	public static final String ERROR_CIFNIF_ERRONEO = "La letra del CIFNIF es erronea";
-	public static final String ERROR_CIFNIF_EXISTENTE = "El CIFNIF introducido ya existe en la base de datos, por favor introduzca otro";
-	public static final String ERROR_TAMANO_MAXIMO = "El CIFNIF introducido ha superado los carácteres máximos";
+	public static final String ERROR_CIFNIF_OBLIGATORIO = "El campo NIF no puede enviarse vacio";
+	public static final String ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato NIF es un texto";
+	public static final String ERROR_CIFNIF_ERRONEO = "La letra del NIF es erronea";
+	public static final String ERROR_CIFNIF_EXISTENTE = "El NIF introducido ya existe en la base de datos, por favor introduzca otro";
+	public static final String ERROR_TAMANO_MAXIMO = "El NIF introducido ha superado los carácteres máximos";
 	
 	public static final String ERROR_NOMBRE_CLIENTE_OBLIGATORIO = "El campo NombreCliente no puede enviarse vacio";
 	public static final String ERROR_NOMBRE_CLIENTE_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato en nombreCliente es un texto";
@@ -29,6 +29,9 @@ public class CodigosErrorRest
 	public static final String ERROR_NOMBRE_DESTINATARIO_OBLIGATORIO = "El campo NombreDestinatario no puede enviarse vacio";
 	public static final String ERROR_NOMBRE_DESTINATARIO_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato en NombreDestinatario es un texto";
 	public static final String ERROR_NOMBRE_DESTINATARIO_TAMANO_MAXIMO = "El campo NombreDestinatario ha superado su tamaño máximo de carácteres";
+	public static final String ERROR_CLIENTE_CREAR_DESTINATARIO = "El id del Cliente al que hace referencia no existe en la base de datos, revíselo de nuevo";
+	public static final String ERROR_CLIENTE_COMPROBAR_DESTINATARIO = "El id del Cliente al que hace referencia no tiene destinatarios asociados, revíselo de nuevo";
+	
 	
 	public static final String ERROR_DIRECCION_COMPLETA_OBLIGATORIO = "El campo DireccionCompleta no puede enviarse vacio";
 	public static final String ERROR_DIRECCION_COMPLETA_TIPO_DE_DATO_INCORRECTO = "Asegurese que el dato en DireccionCompleta es un texto";
