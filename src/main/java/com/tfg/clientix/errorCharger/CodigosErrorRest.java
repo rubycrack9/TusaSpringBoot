@@ -43,6 +43,9 @@ public class CodigosErrorRest
 	
 	public static final String ERROR_ESTADO_ENVIO_TIPO = "Este campo tiene que ser numérico, por favor revisa el formato enviado";
 	public static final String ERROR_ESTADO_ENVIO_TEXTO = "El valor del campo idEstadoEnvio es erroneo, por favor introduzca un valor valido";
-	
-	
+	public static final String ERROR_PESO_VACIO = "El valor del campo peso no debe estar vacío, por favor revise los datos introducidos";	
+	public static final String ERROR_PESO_NUMERICO = "El valor del campo peso debe ser numérico, por favor revise los datos introducidos";	
+	public static final String ERROR_PESO_LONGITUD_MAXIMA = "El valor del campo peso no debe ser mayor a 4 dígitos , por favor revise los datos introducidos";	
+	public static final String ERROR_ENTEGA_NUMERICO = "El valor del campo intentos de entrega no debe ser mayor a 2 dígitos , por favor revise los datos introducidos";	
+	public static final String ERROR_CLIENTE_COMPROBAR_DESTINATARIO_UNICO = "El id del Cliente al que hace referencia no tiene ese id de destinatario asociado, revíselo de nuevo";
 }

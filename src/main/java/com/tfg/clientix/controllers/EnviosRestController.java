@@ -1,5 +1,6 @@
 package com.tfg.clientix.controllers;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ public class EnviosRestController {
 	// INSERTAR UN ENVIOS
 	@PostMapping("/insertarEnvio")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> insert(@RequestBody Envios e) {
+	public ResponseEntity<?> insert(@RequestBody Envios e) throws SQLException {
 		Envios envioNuevo = null;
 		ErrorRest error = new ErrorRest();
 		String EAD = "ENTREGADO AL DESTINATARIO";
@@ -53,7 +54,7 @@ public class EnviosRestController {
 		String OE = "EN LA OFICINA DE ENTREGA";
 		Map<String, Object> response = new HashMap<>();
 		
-		error = Validaciones.validarEnvio(e, enviosService);
+		error = Validaciones.validarEnvio(e, enviosService, e.getIdCliente(), e.getIdDestinatario());
 	
 		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
@@ -80,8 +81,10 @@ public class EnviosRestController {
 		response.put("Mensaje", "El envío ha sido creado con éxito!");
 		response.put("Envio", e);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-		//return new ResponseEntity<Envios>(e, HttpStatus.CREATED);
 
+
+		
+		
 	}
 	
 	
@@ -89,12 +92,12 @@ public class EnviosRestController {
 	@GetMapping("estadoenvio/{id}")
 	public ResponseEntity<?> getEstadoEnvio(@PathVariable Integer id)
 	{
-		//Envios e = null;
+		Envios e = null;
 		Map<String, Object> response = new HashMap<>();
 		List<Envios> estadoEnvios = new ArrayList<Envios>();
 		try {
 			estadoEnvios = enviosService.getEstadoEnvioPorId(id);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException E) {
 			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,14 +108,18 @@ public class EnviosRestController {
 					"El envío con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		//response.put("Estado del envío: ", estadoEnvios.get(0));
-		//response.put("Número de intentos de entrega", estadoEnvios.get(1));
-		return new ResponseEntity<>(estadoEnvios,HttpStatus.OK);
+		Envios[] miarray = new Envios[estadoEnvios.size()];
+		miarray = estadoEnvios.toArray(miarray);
+		
+		response.put("ID del envío", miarray[0].getIdEnvio());
+		response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
+		response.put("Número de intentos de entrega", miarray[0].getNumIntentosEntrega());
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
 	// ACTUALIZAR DESTINATARIO
 	@PutMapping("/actualizarEnvio/{id}")
-	public ResponseEntity<?> update(@RequestBody Envios e, @PathVariable Integer id) {
+	public ResponseEntity<?> update(@RequestBody Envios e, @PathVariable Integer id) throws SQLException {
 
 		List<Envios> envios= enviosService.getEnvios();
 		Envios envio_Actual = null;
@@ -130,17 +137,19 @@ public class EnviosRestController {
 		} else {
 			ErrorRest error = new ErrorRest();
 
-			error = Validaciones.validarEnvio(e, enviosService);
+			error = Validaciones.validarEnvio(e, enviosService, e.getIdCliente(), e.getIdDestinatario());
 
 			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
-				envio_Actual.setDNINIF(e.getDNINIF());
-				envio_Actual.setDireccionCompleta(e.getDireccionCompleta());
-				envio_Actual.setNombreDestinatario(e.getNombreDestinatario());
 				envio_Actual.setIdCliente(e.getIdCliente());
+				envio_Actual.setIdDestinatario(e.getIdDestinatario());
+				envio_Actual.setIdEnvio(e.getIdEnvio());
 				envio_Actual.setIdEstadoEnvio(e.getIdEstadoEnvio());
 				envio_Actual.setNumIntentosEntrega(e.getNumIntentosEntrega());
-				envio_Actual.setCodigoPostal(e.getCodigoPostal());
+				envio_Actual.setPeso(e.getPeso());
+				
+				
+				
 				envio_actualizado = enviosService.insertEnvios(envio_Actual);
 			} else {
 				if (StringUtils.isEmpty(error.getLitError())) {
@@ -153,7 +162,7 @@ public class EnviosRestController {
 				}
 			}
 			response.put("Mensaje", "El envío ha sido actualizado con éxito!");
-			response.put("Cliente:", envio_actualizado);
+			response.put("Envío:", envio_actualizado);
 			
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}

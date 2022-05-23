@@ -2,6 +2,7 @@ package com.tfg.clientix.models.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,101 +10,67 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity(name = "envios")
 @Table(name = "envios")
 public class Envios implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer idEnvio;
-	Integer idCliente;
-	String nombreDestinatario;
-	String DNINIF;
-	String codigoPostal;
-	String direccionCompleta;
-	String idEstadoEnvio;
-	Integer numIntentosEntrega;
-
-
-	public Envios() {
-
-	}
-
-	public Envios(Integer idEnvio, Integer idCliente, String nombreDestinatario, String DNINIF,
-			String codigoPostal, String direccionCompleta, String idEstadoEnvio, Integer numIntentosEntrega) {
-
-		this.idEnvio = idEnvio;
-		this.idCliente = idCliente;
-		this.nombreDestinatario = nombreDestinatario;
-		this.DNINIF = DNINIF;
-		this.codigoPostal = codigoPostal;
-		this.direccionCompleta = direccionCompleta;
-		this.idEstadoEnvio = idEstadoEnvio;
-		this.numIntentosEntrega = numIntentosEntrega;
-
-	}
-
+	private Integer idEnvio;
+	private int idCliente;
+	private int idDestinatario;
+	private String idEstadoEnvio;
+	private Integer numIntentosEntrega;
+	private String peso;
 	public Integer getIdEnvio() {
 		return idEnvio;
 	}
-
 	public void setIdEnvio(Integer idEnvio) {
 		this.idEnvio = idEnvio;
 	}
-
-	public Integer getIdCliente() {
+	public int getIdCliente() {
 		return idCliente;
 	}
-
-	public void setIdCliente(Integer idCliente) {
+	public void setIdCliente(int idCliente) {
 		this.idCliente = idCliente;
 	}
-
-	public String getNombreDestinatario() {
-		return nombreDestinatario;
+	public int getIdDestinatario() {
+		return idDestinatario;
 	}
-
-	public void setNombreDestinatario(String nombreDestinatario) {
-		this.nombreDestinatario = nombreDestinatario;
-	}
-
-	public String getDNINIF() {
-		return DNINIF;
-	}
-
-	public void setDNINIF(String dNINIF) {
-		DNINIF = dNINIF;
-	}
-
-	public String getCodigoPostal() {
-		return codigoPostal;
-	}
-
-	public void setCodigoPostal(String codigoPostal) {
-		this.codigoPostal = codigoPostal;
-	}
-
-	public String getDireccionCompleta() {
-		return direccionCompleta;
-	}
-
-	public void setDireccionCompleta(String direccionCompleta) {
-		this.direccionCompleta = direccionCompleta;
-	}
-
-	public Integer getNumIntentosEntrega() {
-		return numIntentosEntrega;
-	}
-
-	public void setNumIntentosEntrega(Integer numIntentosEntrega) {
-		this.numIntentosEntrega = numIntentosEntrega;
+	public void setIdDestinatario(int idDestinatario) {
+		this.idDestinatario = idDestinatario;
 	}
 	public String getIdEstadoEnvio() {
 		return idEstadoEnvio;
 	}
-
 	public void setIdEstadoEnvio(String idEstadoEnvio) {
 		this.idEstadoEnvio = idEstadoEnvio;
 	}
-
+	public Integer getNumIntentosEntrega() {
+		return numIntentosEntrega;
+	}
+	public void setNumIntentosEntrega(Integer numIntentosEntrega) {
+		this.numIntentosEntrega = numIntentosEntrega;
+	}
+	public String getPeso() {
+		return peso;
+	}
+	public void setPeso(String peso) {
+		this.peso = peso;
+	}
+	public Envios(Integer idEnvio, int idCliente, int idDestinatario, String idEstadoEnvio, Integer numIntentosEntrega,
+			String peso) {
+		this.idEnvio = idEnvio;
+		this.idCliente = idCliente;
+		this.idDestinatario = idDestinatario;
+		this.idEstadoEnvio = idEstadoEnvio;
+		this.numIntentosEntrega = numIntentosEntrega;
+		this.peso = peso;
+	}
+	
+	public Envios() {}
+	
+	
 }
