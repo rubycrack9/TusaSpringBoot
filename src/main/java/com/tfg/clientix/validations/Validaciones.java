@@ -277,22 +277,20 @@ public class Validaciones {
 	public static ErrorRest validarSiClienteExisteCuandoCreaDestinatario(int id) throws SQLException
 	{
 		ErrorRest error = new ErrorRest();
-			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
-			 String SQL = "select idCliente from clientes where idCliente = " +id;
-			 Statement stmt = con.createStatement();
-			 ResultSet rs = stmt.executeQuery(SQL);
-			 if(rs.next() == false)
-			 {
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+		String SQL = "select idCliente from clientes where idCliente = " + id;
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(SQL);
+		if (rs.next() == false) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CLIENTE_CREAR_DESTINATARIO);
-			
-			 }
-			 else {
-				//error.setValidado(true);
-		 		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
-				error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
-		 }
+
+		} else {
+			error.setValidado(true);
+			error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+		}
 		return error;
 		
 	}
@@ -411,22 +409,22 @@ public class Validaciones {
 	public static ErrorRest validarSiClienteTieneEseDestinatario(int idC, int idD) throws SQLException
 	{
 		ErrorRest error = new ErrorRest();
-			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
-	
-			 String SQL =  "select * from destinatarios d, clientes c where  d.idcliente = c.idCliente and c.idCliente= " +idC+ " and d.idDestinatario= " +idD;
-			 Statement stmt = con.createStatement();
-			 ResultSet rs = stmt.executeQuery(SQL);
-			 if(rs.next() == false)
-			 {
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+
+		String SQL = "select * from destinatarios d, clientes c where  d.idcliente = c.idCliente and c.idCliente= "
+				+ idC + " and d.idDestinatario= " + idD;
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(SQL);
+		if (rs.next() == false) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CLIENTE_COMPROBAR_DESTINATARIO_UNICO);
-			
-			 }
-			 else {
-			 		 error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
-					error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
-			 }
+
+		} else {
+			error.setValidado(true);
+			error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+		}
 		return error;
 		
 	}

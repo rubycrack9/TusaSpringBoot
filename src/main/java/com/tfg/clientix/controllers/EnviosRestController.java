@@ -111,10 +111,10 @@ public class EnviosRestController {
 		Envios[] miarray = new Envios[estadoEnvios.size()];
 		miarray = estadoEnvios.toArray(miarray);
 		
-		response.put("ID del envío", miarray[0].getIdEnvio());
-		response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
-		response.put("Número de intentos de entrega", miarray[0].getNumIntentosEntrega());
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		//response.put("ID del envío", miarray[0].getIdEnvio());
+		///response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
+		//response.put("Número de intentos de entrega", miarray[0].getNumIntentosEntrega());
+		return new ResponseEntity<>(estadoEnvios,HttpStatus.OK);
 	}
 
 	// ACTUALIZAR DESTINATARIO
