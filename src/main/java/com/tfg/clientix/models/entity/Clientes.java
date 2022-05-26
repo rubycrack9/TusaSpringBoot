@@ -16,7 +16,8 @@ public class Clientes implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idCliente;
-	private String NombreCliente;
+	@Column(name = "NombreCliente")
+	private String nombreCliente;
 	@Column(name = "CIFNIF", unique = true)
 	private String CIFNIF;
 	private String DireccionFacturacion;
@@ -27,13 +28,13 @@ public class Clientes implements Serializable{
 	
 	public Clientes(String NombreCliente) {
 
-		this.NombreCliente = NombreCliente;
+		this.nombreCliente = NombreCliente;
 
 	}
 
 	public Clientes(int idCliente, String NombreCliente, String CIFNIF, String DireccionFacturacion) {
 		this.idCliente = idCliente;
-		this.NombreCliente = NombreCliente;
+		this.nombreCliente = NombreCliente;
 		this.CIFNIF = CIFNIF;
 		this.DireccionFacturacion = DireccionFacturacion;
 	}
@@ -47,11 +48,11 @@ public class Clientes implements Serializable{
 	}
 
 	public String getNombreCliente() {
-		return NombreCliente;
+		return nombreCliente;
 	}
 
 	public void setNombreCliente(String nombreCliente) {
-		NombreCliente = nombreCliente;
+		nombreCliente = nombreCliente;
 	}
 
 	public String getCIFNIF() {

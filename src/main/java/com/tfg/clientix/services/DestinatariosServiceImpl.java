@@ -25,8 +25,7 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 	private Destinatarios d;
 	@Autowired
 	private EntityManager entityManager;
-	
-	
+
 	@Override
 	public List<Destinatarios> getAllDestinatarios() {
 		// TODO Auto-generated method stub
@@ -39,54 +38,73 @@ public class DestinatariosServiceImpl implements IDestinatariosServices {
 		return destinatariosDao.save(d);
 	}
 
-
 	@Override
 	@Transactional(readOnly = true)
 	public Destinatarios readDestinatarios(Integer id) {
 		return destinatariosDao.findById(id).orElse(null);
 	}
 
-	
 	@Override
 	public void deletebyId(Integer id) {
 		destinatariosDao.deleteById(id);
-		
+
 	}
 
 	@Override
 	public boolean consultarNIFExistente(String dninif, int idcliente) {
 		boolean existe = false;
 		try {
-			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
-			 String SQL = "select d.DNINIF from destinatarios d , clientes c where c.idCliente = d.idcliente and c.idCliente = "+idcliente+" and d.DNINIF = '"+dninif+"'";
-			 Statement stmt = con.createStatement();
-			 ResultSet rs = stmt.executeQuery(SQL);
-			 if(rs.next()) {
-				 String nif = rs.getString("DNINIF");
-				 
-				 if(nif.equals(dninif)) {
-					 existe = false ;
-				 }else {
-					 existe = true;
-				 }
-			 } 
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+			String SQL = "select d.DNINIF from destinatarios d , clientes c where c.idCliente = d.idcliente and c.idCliente = "
+					+ idcliente + " and d.DNINIF = '" + dninif + "'";
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL);
+			if (rs.next()) {
+				String nif = rs.getString("DNINIF");
+
+				if (nif.equals(dninif)) {
+					existe = false;
+				} else {
+					existe = true;
+				}
+			}
 			return existe;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return existe;
 		}
 	}
 
-	//CONSULTAR
+	// CONSULTAR
 	public List<Destinatarios> consultarDestinatariosIdCliente(Integer idCliente) {
-	List<Destinatarios> listaDestinatarios = new ArrayList<Destinatarios>();
-	Destinatarios destinatarioRecuperado = null;
-	Query getDestinatariosIdCliente = entityManager.createQuery("SELECT u FROM destinatarios u WHERE u.idcliente =: idcliente");
-	getDestinatariosIdCliente.setParameter("idcliente", idCliente);
-	for(Object destinatarioRecuperadoSi : getDestinatariosIdCliente.getResultList()) {
-		destinatarioRecuperado = (Destinatarios)destinatarioRecuperadoSi;
-		listaDestinatarios.add(destinatarioRecuperado);
+		List<Destinatarios> listaDestinatarios = new ArrayList<Destinatarios>();
+		Destinatarios destinatarioRecuperado = null;
+		Query getDestinatariosIdCliente = entityManager
+				.createQuery("SELECT u FROM destinatarios u WHERE u.idcliente =: idcliente");
+		getDestinatariosIdCliente.setParameter("idcliente", idCliente);
+		for (Object destinatarioRecuperadoSi : getDestinatariosIdCliente.getResultList()) {
+			destinatarioRecuperado = (Destinatarios) destinatarioRecuperadoSi;
+			listaDestinatarios.add(destinatarioRecuperado);
+		}
+		return listaDestinatarios;
+
 	}
-	return listaDestinatarios;
-	
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Destinatarios> getClienteNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return destinatariosDao.findByNombreDestinatarioContaining(nombre);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Destinatarios> getDireccion(String direccion) {
+				return destinatariosDao.findByDireccionCompletaContaining(direccion);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Destinatarios getDNI(String cifnif) {
+		return destinatariosDao.findByDNINIF(cifnif);
 	}
 }

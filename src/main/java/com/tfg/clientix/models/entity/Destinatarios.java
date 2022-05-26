@@ -18,13 +18,15 @@ public class Destinatarios {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idDestinatario;
-	private String NombreDestinatario;
+	@Column(name = "NombreDestinatario")
+	private String nombreDestinatario;
 	private String DNINIF;
 	@ManyToOne(targetEntity = Clientes.class)
 	@JoinColumn(name = "idcliente")
 	private Clientes cliente;
 	private String CodigoPostal;
-	private String DireccionCompleta;
+	@Column(name = "DireccionCompleta")
+	private String direccionCompleta;
 	@Column(name= "idcliente", insertable = false, updatable = false)
 	@JsonIgnore
 	private int idcliente;
@@ -43,17 +45,17 @@ public class Destinatarios {
 	}
 
 	public Destinatarios(String NombreDestinatario) {
-		this.NombreDestinatario = NombreDestinatario;
+		this.nombreDestinatario = NombreDestinatario;
 
 	}
 
 	public Destinatarios(int idDestinatario, String NombreDestinatario, String DNINIF, int idcliente,
 			String CodigoPostal, String DireccionCompleta) {
 		this.idDestinatario = idDestinatario;
-		this.NombreDestinatario = NombreDestinatario;
+		this.nombreDestinatario = NombreDestinatario;
 		this.DNINIF = DNINIF;
 		this.CodigoPostal = CodigoPostal;
-		this.DireccionCompleta = DireccionCompleta;
+		this.direccionCompleta = DireccionCompleta;
 
 	}
 
@@ -66,11 +68,11 @@ public class Destinatarios {
 	}
 
 	public String getNombreDestinatario() {
-		return NombreDestinatario;
+		return nombreDestinatario;
 	}
 
 	public void setNombreDestinatario(String nombreDestinatario) {
-		NombreDestinatario = nombreDestinatario;
+		nombreDestinatario = nombreDestinatario;
 	}
 
 	public String getDNINIF() {
@@ -90,11 +92,11 @@ public class Destinatarios {
 	}
 
 	public String getDireccionCompleta() {
-		return DireccionCompleta;
+		return direccionCompleta;
 	}
 
 	public void setDireccionCompleta(String direccionCompleta) {
-		DireccionCompleta = direccionCompleta;
+		direccionCompleta = direccionCompleta;
 	}
 	public Clientes getCliente() {
 		return cliente;

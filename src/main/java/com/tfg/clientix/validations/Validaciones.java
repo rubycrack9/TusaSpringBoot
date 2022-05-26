@@ -256,12 +256,13 @@ public class Validaciones {
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_OBLIGATORIO);
 		}
-		/*
-		 * // Validar tipo de dato CODIGO POSTAL if (isNumeric(d.getCodigoPostal())) {
-		 * error.setValidado(false); error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-		 * error.setLitError(CodigosErrorRest.
-		 * ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO); }
-		 */
+		
+		 //Validar tipo de dato CODIGO POSTAL
+		if(isNumeric(d.getCodigoPostal())) {
+		  error.setValidado(false); error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+		  error.setLitError(CodigosErrorRest. ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO); 
+		  }
+	
 		// Validar longitud máxima CODIGO POSTAL
 		if (d.getCodigoPostal().length() > longitudMaxCodigoPostal) {
 			error.setValidado(false);

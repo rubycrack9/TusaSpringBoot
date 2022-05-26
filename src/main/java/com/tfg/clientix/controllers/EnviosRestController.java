@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
+import com.tfg.clientix.models.entity.Destinatarios;
 import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IEnviosServices;
 import com.tfg.clientix.validations.Validaciones;
@@ -32,17 +33,17 @@ import com.tfg.clientix.validations.Validaciones;
 @RestController
 @RequestMapping("ProyectoFinal/webapi")
 public class EnviosRestController {
-	
+
 	Map<String, Object> response = new HashMap<>();
 	@Autowired
 	private IEnviosServices enviosService;
-	
+
 	// CONSULTAR TODOS LOS ENVIOS
 	@GetMapping("/envios")
 	public List<Envios> getEnvios() {
 		return enviosService.getEnvios();
 	}
-	
+
 	// INSERTAR UN ENVIOS
 	@PostMapping("/insertarEnvio")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -53,18 +54,16 @@ public class EnviosRestController {
 		String EO = "EN OFICINA";
 		String OE = "EN LA OFICINA DE ENTREGA";
 		Map<String, Object> response = new HashMap<>();
-		
+
 		error = Validaciones.validarEnvio(e, enviosService, e.getIdCliente(), e.getIdDestinatario());
-	
+
 		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 				&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
-			if(e.getIdEstadoEnvio().equals(EAD)){
+			if (e.getIdEstadoEnvio().equals(EAD)) {
 				e.setIdEstadoEnvio("1");
-			}
-			else if (e.getIdEstadoEnvio().equals(EO)){
+			} else if (e.getIdEstadoEnvio().equals(EO)) {
 				e.setIdEstadoEnvio("2");
-			}
-			else {
+			} else {
 				e.setIdEstadoEnvio("3");
 			}
 			envioNuevo = enviosService.insertEnvios(e);
@@ -77,21 +76,16 @@ public class EnviosRestController {
 				response.put("Código de error:", CodigosErrorRest.COD_ERROR_UNO);
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}	
+		}
 		response.put("Mensaje", "El envío ha sido creado con éxito!");
 		response.put("Envio", e);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 
-
-		
-		
 	}
-	
-	
-	//CONSULTAR ESTADO ENVIO
+
+	// CONSULTAR ESTADO ENVIO
 	@GetMapping("estadoenvio/{id}")
-	public ResponseEntity<?> getEstadoEnvio(@PathVariable Integer id)
-	{
+	public ResponseEntity<?> getEstadoEnvio(@PathVariable Integer id) {
 		Envios e = null;
 		Map<String, Object> response = new HashMap<>();
 		List<Envios> estadoEnvios = new ArrayList<Envios>();
@@ -99,7 +93,7 @@ public class EnviosRestController {
 			estadoEnvios = enviosService.getEstadoEnvioPorId(id);
 		} catch (DataAccessException E) {
 			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
-			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
@@ -110,22 +104,81 @@ public class EnviosRestController {
 		}
 		Envios[] miarray = new Envios[estadoEnvios.size()];
 		miarray = estadoEnvios.toArray(miarray);
-		
-		//response.put("ID del envío", miarray[0].getIdEnvio());
-		///response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
-		//response.put("Número de intentos de entrega", miarray[0].getNumIntentosEntrega());
-		return new ResponseEntity<>(estadoEnvios,HttpStatus.OK);
+
+		// response.put("ID del envío", miarray[0].getIdEnvio());
+		/// response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
+		// response.put("Número de intentos de entrega",
+		// miarray[0].getNumIntentosEntrega());
+		return new ResponseEntity<>(estadoEnvios, HttpStatus.OK);
+	}
+
+	// CONSULTAR ENVIOS POR ID DE CLIENTE
+	@GetMapping("estadoenvio/idcliente/{idCliente}")
+	public ResponseEntity<?> getEnviosIdCliente(@PathVariable Integer idCliente) {
+		List<Envios> e = null;
+		Map<String, Object> response = new HashMap<>();
+		List<Envios> estadoEnvios = new ArrayList<Envios>();
+		try {
+			estadoEnvios = enviosService.getEstadoEnvioPorIdCliente(idCliente);
+		} catch (DataAccessException E) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		if (CollectionUtils.isEmpty(estadoEnvios)) {
+			response.put("Mensaje", "El cliente con id: "
+					.concat(idCliente.toString().concat(" no tiene envíos registrados en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		Envios[] miarray = new Envios[estadoEnvios.size()];
+		miarray = estadoEnvios.toArray(miarray);
+
+		// response.put("ID del envío", miarray[0].getIdEnvio());
+		/// response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
+		// response.put("Número de intentos de entrega",
+		// miarray[0].getNumIntentosEntrega());
+		return new ResponseEntity<List<Envios>>(estadoEnvios, HttpStatus.OK);
+	}
+
+	// CONSULTAR ENVIOS POR ID DE DESTINATARIO
+	@GetMapping("estadoenvio/iddes/{idDestinatario}")
+	public ResponseEntity<?> getEnviosIdDestinatario(@PathVariable Integer idDestinatario) {
+		List<Envios> e = null;
+		Map<String, Object> response = new HashMap<>();
+		List<Envios> estadoEnvios = new ArrayList<Envios>();
+		try {
+			estadoEnvios = enviosService.getEstadoEnvioPorIdDestinatarios(idDestinatario);
+		} catch (DataAccessException E) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:", CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		if (CollectionUtils.isEmpty(estadoEnvios)) {
+			response.put("Mensaje", "El destinatario con id: "
+					.concat(idDestinatario.toString().concat(" no tiene envíos registrados en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		Envios[] miarray = new Envios[estadoEnvios.size()];
+		miarray = estadoEnvios.toArray(miarray);
+
+		// response.put("ID del envío", miarray[0].getIdEnvio());
+		/// response.put("Estado del envío: ", miarray[0].getIdEstadoEnvio());
+		// response.put("Número de intentos de entrega",
+		// miarray[0].getNumIntentosEntrega());
+		return new ResponseEntity<List<Envios>>(estadoEnvios, HttpStatus.OK);
 	}
 
 	// ACTUALIZAR DESTINATARIO
 	@PutMapping("/actualizarEnvio/{id}")
 	public ResponseEntity<?> update(@RequestBody Envios e, @PathVariable Integer id) throws SQLException {
 
-		List<Envios> envios= enviosService.getEnvios();
+		List<Envios> envios = enviosService.getEnvios();
 		Envios envio_Actual = null;
 		Envios envio_actualizado = null;
-		for(Envios envio : envios) {
-			if(envio.getIdEnvio() == id) {
+		for (Envios envio : envios) {
+			if (envio.getIdEnvio() == id) {
 				envio_Actual = envio;
 			}
 		}
@@ -147,9 +200,7 @@ public class EnviosRestController {
 				envio_Actual.setIdEstadoEnvio(e.getIdEstadoEnvio());
 				envio_Actual.setNumIntentosEntrega(e.getNumIntentosEntrega());
 				envio_Actual.setPeso(e.getPeso());
-				
-				
-				
+
 				envio_actualizado = enviosService.insertEnvios(envio_Actual);
 			} else {
 				if (StringUtils.isEmpty(error.getLitError())) {
@@ -163,10 +214,10 @@ public class EnviosRestController {
 			}
 			response.put("Mensaje", "El envío ha sido actualizado con éxito!");
 			response.put("Envío:", envio_actualizado);
-			
+
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 
 	}
-	
+
 }

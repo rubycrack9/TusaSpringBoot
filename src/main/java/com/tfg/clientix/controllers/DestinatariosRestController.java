@@ -141,6 +141,87 @@ public class DestinatariosRestController {
 		return new ResponseEntity<Destinatarios>(d, HttpStatus.OK);
 
 	}
+	
+	
+	//CONSULTAR UN DESTINATARIO POR SU NOMBRE
+	@GetMapping("/destinatarios/nombre/{nombre}")
+	public ResponseEntity<?> mostrarporNombre(@PathVariable String nombre) {
+
+		List<Destinatarios> d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.getClienteNombre(nombre);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d == null) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con ese nombre ".concat(nombre).concat(" no existe en la base de datos!"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<List<Destinatarios>>(d, HttpStatus.OK);
+
+	}
+	
+	
+	//CONSULTAR UN DESTINATARIO POR SU NIF
+	@GetMapping("/destinatarios/direccion/{direccion}")
+	public ResponseEntity<?> mostrarporDireccion(@PathVariable String direccion) {
+
+		List<Destinatarios> d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.getDireccion(direccion);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d == null) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con esa direccion ".concat(direccion).concat(" no existe en la base de datos!"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<List<Destinatarios>>(d, HttpStatus.OK);
+
+	}
+	
+	//CONSULTAR UN DESTINATARIO POR SU NIF
+	@GetMapping("/destinatarios/dni/{nif}")
+	public ResponseEntity<?> mostrarporDNI(@PathVariable String nif) {
+
+		Destinatarios d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.getDNI(nif);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d == null) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con ese DNI ".concat(nif).concat(" no existe en la base de datos!"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<Destinatarios>(d, HttpStatus.OK);
+
+	}
+	
 
 	// ACTUALIZAR DESTINATARIO
 	@PutMapping("/actualizarDestinatario/{id}")

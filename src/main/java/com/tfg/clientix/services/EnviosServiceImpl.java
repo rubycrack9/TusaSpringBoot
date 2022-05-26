@@ -103,4 +103,16 @@ public class EnviosServiceImpl implements IEnviosServices{
 			return existe;
 		}
 	}
+
+	@Override
+	public List<Envios> getEstadoEnvioPorIdCliente(Integer id) {
+		// TODO Auto-generated method stub
+		return enviosDao.findbyidCliente(id);
+	}
+
+	@Override
+	public List<Envios> getEstadoEnvioPorIdDestinatarios(Integer id) {
+		// TODO Auto-generated method stub
+		return enviosDao.findbyidDestinatario(id);
+	}
 }
