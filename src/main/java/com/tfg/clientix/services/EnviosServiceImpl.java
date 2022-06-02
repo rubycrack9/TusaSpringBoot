@@ -2,7 +2,9 @@ package com.tfg.clientix.services;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,7 +46,7 @@ public class EnviosServiceImpl implements IEnviosServices{
 		List<Envios> listaEnvios = new ArrayList<Envios>();
 		List<Object> estadoamostrar = new ArrayList<Object>();
 		Envios enviorecuperado = null;
-		String estadoenvio = null;
+		//String estadoenvio = null;
 		try {
 			Query consultaEstado = entityManager.createQuery("SELECT u FROM envios u WHERE u.idEnvio=: idEnvio");
 			consultaEstado.setParameter("idEnvio", id);
@@ -54,19 +56,7 @@ public class EnviosServiceImpl implements IEnviosServices{
 			}else {
 				listaEnvios.add(enviorecuperado);
 			}
-			if(enviorecuperado.getIdEnvio() == 1)
-			{
-				estadoenvio = "ENTREGADO AL DESTINATARIO";
-			}
-			else if (enviorecuperado.getIdEnvio() == 2)
-			{estadoenvio = "EN OFICINA";}
-			else 
-			{
-				estadoenvio = "EN LA OFICINA DE ENTREGA";
-			}
-			for (Envios envio : listaEnvios) {
-				envio.setIdEstadoEnvio(estadoenvio);	
-				}
+		
 			//estadoamostrar.add(enviorecuperado.getNumIntentosEntrega());
 			
 		} catch (Exception e) {
@@ -102,5 +92,38 @@ public class EnviosServiceImpl implements IEnviosServices{
 		}catch (Exception e) {
 			return existe;
 		}
+	}
+
+	@Override
+	public List<Envios> getEnviosCliente(Integer id) throws SQLException {
+		List<Envios> listaEnvios = new ArrayList<Envios>();
+
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+		String SQL = "select * from envios WHERE idCliente = " +id;
+		PreparedStatement ps = con.prepareStatement(SQL);
+		// ps.setString(1, "%"+nombre+"%");
+		// Statement stmt = con.createStatement();
+		ResultSet rs = ps.executeQuery(SQL);
+		while (rs.next()) {
+			listaEnvios.add(new Envios (rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(5), rs.getString(6), rs.getString(4)));
+		}
+		return listaEnvios;
+		
+	}
+
+	@Override
+	public List<Envios> getEnviosADestinatario(Integer id) throws SQLException {
+		List<Envios> listaEnvios = new ArrayList<Envios>();
+
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+		String SQL = "select * from envios WHERE idCliente = " +id;
+		PreparedStatement ps = con.prepareStatement(SQL);
+		// ps.setString(1, "%"+nombre+"%");
+		// Statement stmt = con.createStatement();
+		ResultSet rs = ps.executeQuery(SQL);
+		while (rs.next()) {
+			listaEnvios.add(new Envios (rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(5), rs.getString(6), rs.getString(4)));
+		}
+		return listaEnvios;
 	}
 }

@@ -47,10 +47,11 @@ public class Destinatarios {
 
 	}
 
-	public Destinatarios(int idDestinatario, String NombreDestinatario, String DNINIF, int idcliente,
+	public Destinatarios(int idDestinatario, int idcliente, String NombreDestinatario, String DNINIF,
 			String CodigoPostal, String DireccionCompleta) {
 		this.idDestinatario = idDestinatario;
 		this.NombreDestinatario = NombreDestinatario;
+		this.idcliente = idcliente;
 		this.DNINIF = DNINIF;
 		this.CodigoPostal = CodigoPostal;
 		this.DireccionCompleta = DireccionCompleta;
@@ -103,6 +104,7 @@ public class Destinatarios {
 	public void setCliente(Clientes cliente) {
 		this.cliente = cliente;
 	}
-
-
 }
+
+
+

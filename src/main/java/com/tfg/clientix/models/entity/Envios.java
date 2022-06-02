@@ -22,8 +22,9 @@ public class Envios implements Serializable{
 	private int idCliente;
 	private int idDestinatario;
 	private String idEstadoEnvio;
-	private Integer numIntentosEntrega;
+	private String numIntentosEntrega;
 	private String peso;
+	
 	public Integer getIdEnvio() {
 		return idEnvio;
 	}
@@ -48,10 +49,10 @@ public class Envios implements Serializable{
 	public void setIdEstadoEnvio(String idEstadoEnvio) {
 		this.idEstadoEnvio = idEstadoEnvio;
 	}
-	public Integer getNumIntentosEntrega() {
+	public String getNumIntentosEntrega() {
 		return numIntentosEntrega;
 	}
-	public void setNumIntentosEntrega(Integer numIntentosEntrega) {
+	public void setNumIntentosEntrega(String numIntentosEntrega) {
 		this.numIntentosEntrega = numIntentosEntrega;
 	}
 	public String getPeso() {
@@ -60,7 +61,7 @@ public class Envios implements Serializable{
 	public void setPeso(String peso) {
 		this.peso = peso;
 	}
-	public Envios(Integer idEnvio, int idCliente, int idDestinatario, String idEstadoEnvio, Integer numIntentosEntrega,
+	public Envios(Integer idEnvio, int idCliente, int idDestinatario, String idEstadoEnvio, String numIntentosEntrega,
 			String peso) {
 		this.idEnvio = idEnvio;
 		this.idCliente = idCliente;

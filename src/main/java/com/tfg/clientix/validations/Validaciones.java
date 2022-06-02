@@ -2,6 +2,7 @@ package com.tfg.clientix.validations;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,6 +20,8 @@ import com.tfg.clientix.models.entity.Envios;
 import com.tfg.clientix.services.IClienteServices;
 import com.tfg.clientix.services.IDestinatariosServices;
 import com.tfg.clientix.services.IEnviosServices;
+
+import net.bytebuddy.implementation.EqualsMethod;
 
 public class Validaciones {
 
@@ -52,7 +55,7 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
 			return error;
 		}
-		if(c.getCIFNIF().length() > longitud_maxima_dni) {
+		if (c.getCIFNIF().length() > longitud_maxima_dni) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
@@ -60,12 +63,12 @@ public class Validaciones {
 		}
 		// Validar letra correcta CIFNIF
 		error = validarLetraCIFNIF(c.getCIFNIF());
-		if(error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
+		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
 			return error;
 		}
 		// Validar nif existente en la base de datos
 		error = comprobarNifExistente(c.getCIFNIF(), clienteServices);
-		if(error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
+		if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_UNO)) {
 			return error;
 		}
 		// Validar NombreCliente obligatorio, ni vacio ni null
@@ -99,7 +102,7 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TIPO_DE_DATO_INCORRECTO);
 		}
 		// Validar longitud máxima direccion
-		if (c.getNombreCliente().length() > longitudMaximaDireccion) {
+		if (c.getDireccionFacturacion().length() > longitudMaximaDireccion) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TAMANO_MAXIMO);
@@ -118,7 +121,7 @@ public class Validaciones {
 		int longitudMaximaNombre = 50;
 		int longitudMaximaDireccion = 100;
 		int longitud_maxima_dni = 9;
-		
+
 		// Validar NombreCliente obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(c.getNombreCliente()) || c.getNombreCliente() == null) {
 			error.setValidado(false);
@@ -150,7 +153,7 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TIPO_DE_DATO_INCORRECTO);
 		}
 		// Validar longitud máxima direccion
-		if (c.getNombreCliente().length() > longitudMaximaDireccion) {
+		if (c.getDireccionFacturacion().length() > longitudMaximaDireccion) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_DIRECCION_FACTURACION_TAMANO_MAXIMO);
@@ -159,12 +162,8 @@ public class Validaciones {
 		return error;
 	}
 
-	
-	
-	
-	
-	
-	public static ErrorRest validarDestinatario(Destinatarios d, IDestinatariosServices destinatariosService) throws SQLException {
+	public static ErrorRest validarDestinatario(Destinatarios d, IDestinatariosServices destinatariosService)
+			throws SQLException {
 		ErrorRest error = new ErrorRest();
 		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
 		error.setValidado(true);
@@ -175,12 +174,10 @@ public class Validaciones {
 		int longitudMaxDireccionCompleta = 100;
 		int longitudMaxCodigoPostal = 5;
 		int longitud_maxima_dni = 9;
-		
-		
-		//Validar si existe el cliente
+
+		// Validar si existe el cliente
 		error = validarSiClienteExisteCuandoCreaDestinatario(d.getCliente().getIdCliente());
-		
-		
+
 		// Validar DNINIF obligatorio, ni vacio ni null
 		if (StringUtils.isEmpty(d.getDNINIF()) || d.getDNINIF() == null) {
 			error.setValidado(false);
@@ -195,7 +192,7 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
 			return error;
 		}
-		if(d.getDNINIF().length() > longitud_maxima_dni) {
+		if (d.getDNINIF().length() > longitud_maxima_dni) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
@@ -203,14 +200,13 @@ public class Validaciones {
 		}
 		// Validar letra correcta DNINIF
 		error = validarLetraCIFNIF(d.getDNINIF());
-		if(error.getCodError().equals("1"))
-		{
+		if (error.getCodError().equals("1")) {
 			return error;
 		}
 		// Validar nif existente en la base de datos
-		error = comprobarNifExistenteDestinatarios(d.getDNINIF(), destinatariosService, d.getCliente().getIdCliente());
-		if(error.getCodError().equals("1"))
-		{
+		error = ValidaryconsultarNIFExistenteparaesecliente(d.getDNINIF(), destinatariosService,
+				d.getCliente().getIdCliente());
+		if (error.getCodError().equals("1")) {
 			return error;
 		}
 		// Validar NombreDestinatario obligatorio, ni vacio ni null
@@ -256,14 +252,16 @@ public class Validaciones {
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_OBLIGATORIO);
 		}
-		/*
-		 * // Validar tipo de dato CODIGO POSTAL if (isNumeric(d.getCodigoPostal())) {
-		 * error.setValidado(false); error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-		 * error.setLitError(CodigosErrorRest.
-		 * ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO); }
-		 */
+
+		// Validar tipo de dato CODIGO POSTAL
+		if (!isNumeric(d.getCodigoPostal())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO);
+		}
+
 		// Validar longitud máxima CODIGO POSTAL
-		if (d.getCodigoPostal().length() > longitudMaxCodigoPostal) {
+		if (d.getCodigoPostal().length() != longitudMaxCodigoPostal) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TAMANO_MAXIMO);
@@ -272,10 +270,180 @@ public class Validaciones {
 		return error;
 
 	}
-	
-	
-	public static ErrorRest validarSiClienteExisteCuandoCreaDestinatario(int id) throws SQLException
-	{
+
+	public static ErrorRest validarDestinatarioActualizar(Destinatarios d, IDestinatariosServices destinatariosService)
+			throws SQLException {
+		ErrorRest error = new ErrorRest();
+		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
+		error.setValidado(true);
+		error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+		error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+
+		int longitudMaxNombreDestinatario = 50;
+		int longitudMaxDireccionCompleta = 100;
+		int longitudMaxCodigoPostal = 5;
+		int longitud_maxima_dni = 9;
+
+		// Validar si existe el cliente
+		error = validarSiClienteExisteCuandoCreaDestinatario(d.getCliente().getIdCliente());
+
+		// Validar DNINIF obligatorio, ni vacio ni null
+		if (StringUtils.isEmpty(d.getDNINIF()) || d.getDNINIF() == null) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_OBLIGATORIO);
+			return error;
+		}
+		// Validar tipo de dato DNINIF
+		if (isNumeric(d.getDNINIF())) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_TIPO_DE_DATO_INCORRECTO);
+			return error;
+		}
+		if (d.getDNINIF().length() > longitud_maxima_dni) {
+			error.setValidado(false);
+			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+			error.setLitError(CodigosErrorRest.ERROR_TAMANO_MAXIMO);
+			return error;
+		}
+
+		if (d.getDNINIF().equals(ValidarSiNIFesElMismoCuandoActualiza(d.getDNINIF(), destinatariosService,
+				d.getCliente().getIdCliente(), d.getIdDestinatario()))) {
+			// Validar NombreDestinatario obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getNombreDestinatario()) || d.getNombreDestinatario() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_OBLIGATORIO);
+			}
+			// Validar tipo de dato NombreDestinatario
+			if (isNumeric(d.getNombreDestinatario())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_TIPO_DE_DATO_INCORRECTO);
+			}
+			// Validar longitud máxima NombreDestinatario
+			if (d.getNombreDestinatario().length() > longitudMaxNombreDestinatario) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_TAMANO_MAXIMO);
+			}
+			// Validar direccion obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getDireccionCompleta()) || d.getDireccionCompleta() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_OBLIGATORIO);
+			}
+			// Validar tipo de dato direccion
+			if (isNumeric(d.getDireccionCompleta())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_TIPO_DE_DATO_INCORRECTO);
+			}
+			// Validar longitud máxima direccion
+			if (d.getDireccionCompleta().length() > longitudMaxDireccionCompleta) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_TAMANO_MAXIMO);
+			}
+
+			// Validar CODIGO POSTAL obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getCodigoPostal()) || d.getCodigoPostal() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_OBLIGATORIO);
+			}
+
+			// Validar tipo de dato CODIGO POSTAL
+			if (!isNumeric(d.getCodigoPostal())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO);
+			}
+
+			// Validar longitud máxima CODIGO POSTAL
+			if (d.getCodigoPostal().length() != longitudMaxCodigoPostal) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TAMANO_MAXIMO);
+			}
+		} else {
+			// Validar letra correcta DNINIF
+			error = validarLetraCIFNIF(d.getDNINIF());
+			if (error.getCodError().equals("1")) {
+				return error;
+			}
+			// Validar nif existente en la base de datos
+			error = ValidaryconsultarNIFExistenteparaesecliente(d.getDNINIF(), destinatariosService,
+					d.getCliente().getIdCliente());
+			if (error.getCodError().equals("1")) {
+				return error;
+			}
+			// Validar NombreDestinatario obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getNombreDestinatario()) || d.getNombreDestinatario() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_OBLIGATORIO);
+			}
+			// Validar tipo de dato NombreDestinatario
+			if (isNumeric(d.getNombreDestinatario())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_TIPO_DE_DATO_INCORRECTO);
+			}
+			// Validar longitud máxima NombreDestinatario
+			if (d.getNombreDestinatario().length() > longitudMaxNombreDestinatario) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_NOMBRE_DESTINATARIO_TAMANO_MAXIMO);
+			}
+			// Validar direccion obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getDireccionCompleta()) || d.getDireccionCompleta() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_OBLIGATORIO);
+			}
+			// Validar tipo de dato direccion
+			if (isNumeric(d.getDireccionCompleta())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_TIPO_DE_DATO_INCORRECTO);
+			}
+			// Validar longitud máxima direccion
+			if (d.getDireccionCompleta().length() > longitudMaxDireccionCompleta) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_DIRECCION_COMPLETA_TAMANO_MAXIMO);
+			}
+
+			// Validar CODIGO POSTAL obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(d.getCodigoPostal()) || d.getCodigoPostal() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_OBLIGATORIO);
+			}
+
+			// Validar tipo de dato CODIGO POSTAL
+			if (!isNumeric(d.getCodigoPostal())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TIPO_DE_DATO_INCORRECTO);
+			}
+
+			// Validar longitud máxima CODIGO POSTAL
+			if (d.getCodigoPostal().length() != longitudMaxCodigoPostal) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CODIGO_POSTAL_TAMANO_MAXIMO);
+			}
+
+		}
+
+		return error;
+
+	}
+
+	public static ErrorRest validarSiClienteExisteCuandoCreaDestinatario(int id) throws SQLException {
 		ErrorRest error = new ErrorRest();
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
 		String SQL = "select idCliente from clientes where idCliente = " + id;
@@ -292,32 +460,27 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
 		}
 		return error;
-		
+
 	}
-	
-	
-	public static ErrorRest validarSiClienteTieneDestinatarios(int id) throws SQLException
-	{
+
+	public static ErrorRest validarSiClienteTieneDestinatarios(int id) throws SQLException {
 		ErrorRest error = new ErrorRest();
-			 Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix","root","");
-			 String SQL = "select * from destinatarios where idcliente = " +id;
-			 Statement stmt = con.createStatement();
-			 ResultSet rs = stmt.executeQuery(SQL);
-			 if(rs.next() == false)
-			 {
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+		String SQL = "select * from destinatarios where idcliente = " + id;
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(SQL);
+		if (rs.next() == false) {
 			error.setValidado(false);
 			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
 			error.setLitError(CodigosErrorRest.ERROR_CLIENTE_COMPROBAR_DESTINATARIO);
-			
-			 }
-			 else {
-			 		 error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
-					error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
-			 }
+
+		} else {
+			error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+		}
 		return error;
-		
+
 	}
-	
 
 	public static ErrorRest validarLetraCIFNIF(String cifnif) {
 
@@ -346,8 +509,7 @@ public class Validaciones {
 			return false;
 		}
 	}
-	
-	
+
 	private static boolean isNumericFloat(String cadena) {
 		try {
 			Float.parseFloat(cadena);
@@ -389,25 +551,60 @@ public class Validaciones {
 		return error;
 	}
 
-	private static ErrorRest consultarNIFExistenteparaesecliente(String dninif, IEnviosServices envioServices,
-			int idcliente) {
+	private static ErrorRest ValidaryconsultarNIFExistenteparaesecliente(String dninif,
+			IDestinatariosServices envioServices, int idcliente) throws SQLException {
 		ErrorRest error = new ErrorRest();
-		if (envioServices.consultarNIFExistenteparaesecliente(dninif, idcliente)) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE);
-		} else {
-			error.setValidado(true);
-			error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
-			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
-		}
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+			String SQL = "select d.DNINIF from destinatarios d , clientes c where c.idCliente = d.idcliente and c.idCliente = "
+					+ idcliente + " and d.DNINIF = '" + dninif + "'";
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL);
+			if (rs.next()) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_CIFNIF_EXISTENTE_CLIENTE);
+			} else {
+				error.setValidado(true);
+				error.setCodError(CodigosErrorRest.COD_ERROR_CERO);
+				error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
+			}
 
+		} catch (Exception e) {
+			e.getMessage();
+		}
 		return error;
 	}
-	
 
-	public static ErrorRest validarSiClienteTieneEseDestinatario(int idC, int idD) throws SQLException
-	{
+	private static String ValidarSiNIFesElMismoCuandoActualiza(String dninif, IDestinatariosServices envioServices,
+			int idcliente, int idDes) throws SQLException {
+		String dnidevuelto = null;
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
+			String SQL = "select * from destinatarios d , clientes c where c.idCliente = d.idcliente and c.idCliente = "
+					+ idcliente + " and d.DNINIF = '" + dninif + "'";
+			PreparedStatement ps = con.prepareStatement(SQL);
+			// ps.setString(1, "%"+nombre+"%");
+			// Statement stmt = con.createStatement();
+			ResultSet rs = ps.executeQuery(SQL);
+			if (rs.next()) {
+				if (idDes == rs.getInt(1)) {
+					dnidevuelto = rs.getString(4);
+				} else {
+
+					dnidevuelto = null;
+
+				}
+
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return dnidevuelto;
+
+	}
+
+	public static ErrorRest validarSiClienteTieneEseDestinatario(int idC, int idD) throws SQLException {
 		ErrorRest error = new ErrorRest();
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clientix", "root", "");
 
@@ -426,12 +623,12 @@ public class Validaciones {
 			error.setLitError(CodigosErrorRest.LIT_ERROR_SUCCESS);
 		}
 		return error;
-		
+
 	}
-	
 
 	@SuppressWarnings("deprecation")
-	public static ErrorRest validarEnvio(Envios e, IEnviosServices envioServices, int idCl ,int idDes ) throws SQLException {
+	public static ErrorRest validarEnvio(Envios e, IEnviosServices envioServices, int idCl, int idDes)
+			throws SQLException {
 		ErrorRest error = new ErrorRest();
 		// Si la validacion va bien devolverá true, codigo de error 0 y literal success
 		error.setValidado(true);
@@ -444,61 +641,81 @@ public class Validaciones {
 		int longitud_maxima_dni = 9;
 		int longitud_maxima_peso = 4;
 		int longitud_maxima_intentos_entrega = 2;
-		
-		
-		//Validar si el id de Cliente existe
-		error = validarSiClienteExisteCuandoCreaDestinatario(idCl);
-		
-		if(error.getCodError().equals("1"))
-		{
-			return error;
-		}else {
-		
-		//Validar si el id de Destinatario existe para ese cliente
-		error = validarSiClienteTieneEseDestinatario(idCl, idDes);
-		
-		// Validar Peso obligatorio, ni vacio ni null
-		if (StringUtils.isEmpty(e.getPeso()) || e.getPeso() == null) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_PESO_VACIO);
-		}
-		// Validar tipo de dato Peso
-		if (!isNumericFloat(e.getPeso())) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_PESO_NUMERICO);
-		}
-		// Validar longitud máxima Peso
-		if (e.getPeso().length() > longitud_maxima_peso) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_PESO_LONGITUD_MAXIMA);
-		}
-		
-		
-		if(e.getIdEstadoEnvio().equals(EAD)
-				|| e.getIdEstadoEnvio().equals(EO)
-				|| e.getIdEstadoEnvio().equals(OE)) {
-		}else {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TEXTO);
-		}
 
-		// Validar Intentos Entrega
-		if (!isNumeric(e.getNumIntentosEntrega().toString())) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TIPO);
-		}
+		String EAD = "ENTREGADO AL DESTINATARIO";
+		String ER = "EN REPARTO";
+		String OE = "EN LA OFICINA DE ENTREGA";
+
+		// Validar si el id de Cliente existe
+		error = validarSiClienteExisteCuandoCreaDestinatario(idCl);
+
+		if (error.getCodError().equals("1")) {
+			return error;
+		} else {
+
+			// Validar si el id de Destinatario existe para ese cliente
+			error = validarSiClienteTieneEseDestinatario(idCl, idDes);
+
+			// Validar Peso obligatorio, ni vacio ni null
+			if (StringUtils.isEmpty(e.getPeso()) || e.getPeso() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_PESO_VACIO);
+			}
+
+			if (!e.getIdEstadoEnvio().equals(OE) && (!e.getIdEstadoEnvio().equals(ER)) && (!e.getIdEstadoEnvio().equals(EAD)))
+			{
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_ESTADO_PEDIDO);
+			}
+			
+			if (e.getPeso() == null) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_PESO_VACIO);
+			}
+			
+			// Validar tipo de dato Peso
+			if (!isNumericFloat(e.getPeso())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_PESO_NUMERICO);
+			}
+			// Validar longitud máxima Peso
+			if (e.getPeso().length() > longitud_maxima_peso) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_PESO_LONGITUD_MAXIMA);
+			}
+
+			if (e.getIdEstadoEnvio().equals(EAD) || e.getIdEstadoEnvio().equals(EO)
+					|| e.getIdEstadoEnvio().equals(OE)) {
+			} else {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TEXTO);
+			}
+
+			// Validar Intentos Entrega
+			if (!isNumeric(e.getNumIntentosEntrega().toString())) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_ESTADO_ENVIO_TIPO);
+			}
+
+			if (e.getNumIntentosEntrega().toString().length() > longitud_maxima_intentos_entrega) {
+				error.setValidado(false);
+				error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
+				error.setLitError(CodigosErrorRest.ERROR_ENTEGA_NUMERICO);
+			}
+			
+			
+			
 		
-		if (e.getNumIntentosEntrega().toString().length() > longitud_maxima_intentos_entrega) {
-			error.setValidado(false);
-			error.setCodError(CodigosErrorRest.COD_ERROR_UNO);
-			error.setLitError(CodigosErrorRest.ERROR_ENTEGA_NUMERICO);
-		}
 		
+			
+
 		}
 		return error;
 	}

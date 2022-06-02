@@ -1,5 +1,6 @@
 package com.tfg.clientix.services;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.tfg.clientix.models.entity.Envios;
@@ -17,5 +18,9 @@ public interface IEnviosServices {
 	public boolean consultarNIFExistenteparaesecliente(String dninif, int idcliente);
 
 	public List<Envios> getEstadoEnvioPorId(Integer id);
+	
+	public List<Envios> getEnviosCliente(Integer id) throws SQLException;
+	
+	public List<Envios> getEnviosADestinatario(Integer id) throws SQLException;
 
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tfg.clientix.errorCharger.CodigosErrorRest;
 import com.tfg.clientix.errorCharger.ErrorRest;
+import com.tfg.clientix.models.entity.Clientes;
 import com.tfg.clientix.models.entity.Destinatarios;
 import com.tfg.clientix.services.IDestinatariosServices;
 import com.tfg.clientix.validations.Validaciones;
@@ -114,6 +115,59 @@ public class DestinatariosRestController {
 		}
 	}
 	
+	//Destinatario por su nombre
+	@GetMapping("/destinatarios/nombre/{nombre}")
+	public ResponseEntity<?> mostrarporNombre(@PathVariable String nombre) throws SQLException {
+
+		List<Destinatarios> d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.getDestinatarioNombreDestinatario(nombre);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d.isEmpty()) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con ese nombre ".concat(nombre).concat(" no existe en la base de datos!"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<List<Destinatarios>>(d, HttpStatus.OK);
+
+	}
+	
+	
+		//Consultar cliente por id de destinatario
+		@GetMapping("/destinatarios/idDestinatario/{id}")
+		public ResponseEntity<?> mostrarClienteId(@PathVariable Integer id) throws SQLException {
+
+			Clientes d = null;
+			Map<String, Object> response = new HashMap<>();
+
+			try {
+				d = destinatariosService.getClienteIdDestinatario(id);
+			} catch (DataAccessException e) {
+				response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+				response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+			}
+
+			if (d == null) {
+				response.put("Mensaje",
+						"No se puede encontrar ningún cliente con ese " + id + " de destinatario!");
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<Clientes>(d, HttpStatus.OK);
+
+		}
+	
 	
 	
 	//CONSULTAR UN DESTINATARIO POR ID
@@ -134,11 +188,65 @@ public class DestinatariosRestController {
 
 		if (d == null) {
 			response.put("Mensaje",
-					"El cliente con ID: ".concat(id.toString().concat(" no existe en la base de datos!")));
+					"No se puede encontrar ningún destinatario con ese id: ".concat(id.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		return new ResponseEntity<Destinatarios>(d, HttpStatus.OK);
+
+	}
+	
+	
+	//Destinatario por su NIF
+	@GetMapping("/destinatarios/nif/{nif}")
+	public ResponseEntity<?> mostrarPorDNI(@PathVariable String nif) throws SQLException {
+
+		List<Destinatarios> d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.getDestinatarioNIF(nif);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d.isEmpty()) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con ese NIF " + nif +" en la base de datos!");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<List<Destinatarios>>(d, HttpStatus.OK);
+
+	}
+	
+	
+	//Destinatario por su Direccion
+	@GetMapping("/destinatarios/direccion/{direccion}")
+	public ResponseEntity<?> mostrarPorDireccion(@PathVariable String direccion) throws SQLException {
+
+		List<Destinatarios> d = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			d = destinatariosService.consultarDestinatariosDireccion(direccion);
+		} catch (DataAccessException e) {
+			response.put("Mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("Código de error:",CodigosErrorRest.COD_ERROR_DEFECTO);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+
+		if (d.isEmpty()) {
+			response.put("Mensaje",
+					"No se puede encontrar ningún destinatario con esa dirección " + direccion +" en la base de datos!");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<List<Destinatarios>>(d, HttpStatus.OK);
 
 	}
 
@@ -157,7 +265,7 @@ public class DestinatariosRestController {
 		} else {
 			ErrorRest error = new ErrorRest();
 
-			error = Validaciones.validarDestinatario(d, destinatariosService);
+			error = Validaciones.validarDestinatarioActualizar(d, destinatariosService);
 
 			if (error.getCodError().equals(CodigosErrorRest.COD_ERROR_CERO)
 					&& error.getLitError().equals(CodigosErrorRest.LIT_ERROR_SUCCESS) && error.isValidado()) {
@@ -184,6 +292,9 @@ public class DestinatariosRestController {
 		}
 		
 	}
+	
+	
+
 
 	// METODO BORRAR POR ID
 	@DeleteMapping("borrarDestinario/{id}")
